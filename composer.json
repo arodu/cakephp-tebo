@@ -1,6 +1,6 @@
 {
-    "name": "your-name-here/te-bo",
-    "description": "TeBo plugin for CakePHP",
+    "name": "arodu/tebo",
+    "description": "Telegram Bot plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
     "require": {
