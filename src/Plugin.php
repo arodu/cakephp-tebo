@@ -26,6 +26,7 @@ class Plugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
+        parent::bootstrap($app);
     }
 
     /**
@@ -39,15 +40,6 @@ class Plugin extends BasePlugin
      */
     public function routes(RouteBuilder $routes): void
     {
-        $routes->plugin(
-            'TeBo',
-            ['path' => '/tebo'],
-            function (RouteBuilder $builder) {
-                // Add custom routes here
-
-                $builder->fallbacks();
-            }
-        );
         parent::routes($routes);
     }
 

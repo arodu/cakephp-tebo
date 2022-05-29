@@ -2,6 +2,9 @@
 
 use Cake\Core\Configure;
 
-Configure::write('telegram.token', env('TELEGRAM_TOKEN', null));
-
-
+try {
+    Configure::load('TeBo.tebo', 'default', false);
+    Configure::load('tebo', 'default', false);
+} catch (\Throwable $th) {
+    //throw $th;
+}
