@@ -13,8 +13,8 @@ $routes->plugin(
         if (!empty($obfuscation) && is_string($obfuscation)) {
             $webhook = '/' . $obfuscation;
         }
-
-        $builder->get($webhook, [
+        
+        $builder->post($webhook, [
             'plugin' => 'TeBo',
             'controller' => 'Api',
             'action' => 'webhook',

@@ -20,7 +20,8 @@ class ApiController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-        $this->Security->setConfig('unlockedActions', ['webhook']);
+        //$this->Security->setConfig('unlockedActions', ['webhook']);
+        //$this->getEventManager()->off($this->Csrf);
     }
 
 
