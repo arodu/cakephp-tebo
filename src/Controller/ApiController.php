@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TeBo\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Log\Log;
 use TeBo\Controller\AppController;
 
@@ -14,14 +15,24 @@ use TeBo\Controller\AppController;
 class ApiController extends AppController
 {
     /**
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $this->Security->setConfig('unlockedActions', ['webhook']);
+    }
+
+
+    /**
      * webhook method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function webhook()
     {
-        Log::debug(json_encode($this->getRequest()->getData()));
-        Log::debug(json_encode($this->getRequest()->getQuery()));
+        Log::info(json_encode($this->getRequest()->getData()));
+        Log::info(json_encode($this->getRequest()->getQuery()));
 
         return $this->response->withStatus(200);
     }
