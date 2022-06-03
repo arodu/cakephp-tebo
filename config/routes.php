@@ -19,7 +19,5 @@ $routes->plugin(
             'controller' => 'Api',
             'action' => 'webhook',
         ]);
-
-        $builder->fallbacks();
     }
 );
