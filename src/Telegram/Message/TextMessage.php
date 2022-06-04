@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Message;
+namespace TeBo\Telegram\Message;
 
 use Cake\Core\InstanceConfigTrait;
 
@@ -24,7 +24,7 @@ class TextMessage implements MessageInterface
         $this->text[] = $text;
     }
 
-    public function getText()
+    public function getText(): string
     {
         return implode("\n", $this->text);
     }

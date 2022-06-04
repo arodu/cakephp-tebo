@@ -16,7 +16,7 @@ $routes->plugin(
         
         $builder->post($webhook, [
             'plugin' => 'TeBo',
-            'controller' => 'Api',
+            'controller' => 'Bot',
             'action' => 'webhook',
         ]);
     }
