@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Message;
+namespace TeBo\Telegram\Response;
 
 use Cake\Core\InstanceConfigTrait;
 
-class TextMessage implements MessageInterface
+class Text implements ResponseInterface
 {
     protected array $text = [];
 

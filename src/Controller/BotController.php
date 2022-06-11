@@ -7,6 +7,7 @@ use Cake\Event\EventInterface;
 use TeBo\Controller\AppController;
 use TeBo\TeBo\Command\HelloWorld;
 use TeBo\Telegram\Chat;
+use TeBo\Telegram\Command\CommandFactory;
 use TeBo\Telegram\Update;
 
 /**
@@ -26,8 +27,10 @@ class BotController extends AppController
         $data = $this->getRequest()->getData();
         $update = new Update($data);
 
-        //$command = new HelloWorld();
-        //$command->execute($chat, $data);
+        if ($update->isCommand()) {
+            $command = CommandFactory::build($update);
+            $command->execute($update);
+        }
 
         //Log::info(json_encode($this->getRequest()->getData()));
         //Log::info(json_encode($this->getRequest()->getQuery()));

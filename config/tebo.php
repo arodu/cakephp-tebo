@@ -14,5 +14,14 @@ return [
             'action' => 'webhook',
         ],
         'obfuscation' => env('OBFUSCATION', null),
+        'command' => [
+            'map' => [
+                'start' => \TeBo\Telegram\Command\Start::class,
+            ],
+            'namespaces' => [
+                0 => '\App\Telegram\Command',
+                1 => '\TeBo\Telegram\Command',
+            ],
+        ]
     ],
 ];

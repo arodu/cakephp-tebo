@@ -48,4 +48,38 @@ class Update
         
         return $this->_chat;
     }
+
+    public function isCommand(): bool
+    {
+        $messageEntity = $this->getConfig('message.entities.0', null);
+        $isCommand = $messageEntity['type'] === 'bot_command' && $messageEntity['offset'] === 0;
+        if (!empty($messageEntity) && $isCommand) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getCommandName(): ?string
+    {
+        if (!$this->isCommand()) {
+            return null;
+        }
+
+        $messageEntity = $this->getConfig('message.entities.0');
+        $text = $this->getConfig('message.text');
+        $commandName = substr($text, $messageEntity['offset'], $messageEntity['length']);
+
+        return trim($commandName, ' /');
+    }
+
+    public function getCommandParams(): ?array
+    {
+        if (!$this->isCommand()) {
+            return null;
+        }
+
+        return [];
+    }
+
 }

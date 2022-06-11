@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Message;
+namespace TeBo\Telegram\Response;
 
-interface MessageInterface
+interface ResponseInterface
 {
     /**
      * @return string

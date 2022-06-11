@@ -8,7 +8,7 @@ use TeBo\Telegram\Update;
 
 interface CommandInterface
 {
+    public function __construct(array $args = []);
     public function help();
-
-    public function execute(array $args, Update $update);
+    public function execute(Update $update);
 }

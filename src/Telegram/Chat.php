@@ -6,6 +6,7 @@ namespace TeBo\Telegram;
 use Cake\Core\InstanceConfigTrait;
 use Exception;
 use TeBo\Message\MessageInterface;
+use TeBo\Telegram\Response\ResponseInterface;
 use TeBo\Utility\Bot;
 
 class Chat
@@ -15,6 +16,8 @@ class Chat
     protected $_defaultConfig = [
         'id' => null,
     ];
+
+    protected $_lastResult = null;
 
     /**
      * @param array $config
@@ -32,11 +35,13 @@ class Chat
      * @param MessageInterface $message
      * @return boolean
      */
-    public function send(MessageInterface $message): bool
+    public function send(ResponseInterface $message): bool
     {
-        return Bot::sendMessage([
+        $this->_lastResult = Bot::sendMessage([
             'chat_id' => $this->getConfig('id'),
             'text' => $message->getText(),
         ]);
+
+        return $this->_lastResult['ok'];
     }
 }
