@@ -2,6 +2,7 @@
 
 return [
     'tebo' => [
+        'debug' => true,
         'telegram' => [
             'token' => env('TELEGRAM_TOKEN', null),
             'api' => env('TELEGRAM_API', 'https://api.telegram.org/bot:token/:method'),

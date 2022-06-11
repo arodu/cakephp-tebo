@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TeBo\Controller;
 
 use Cake\Event\EventInterface;
+use Exception;
 use TeBo\Controller\AppController;
 use TeBo\TeBo\Command\HelloWorld;
 use TeBo\Telegram\Chat;
@@ -24,12 +25,16 @@ class BotController extends AppController
      */
     public function webhook()
     {
-        $data = $this->getRequest()->getData();
-        $update = new Update($data);
-
-        if ($update->isCommand()) {
-            $command = CommandFactory::build($update);
-            $command->execute($update);
+        try {
+            $data = $this->getRequest()->getData();
+            $update = new Update($data);
+    
+            if ($update->isCommand()) {
+                $command = CommandFactory::build($update);
+                $command->execute($update);
+            }
+        } catch (Exception $e) {
+            debug($e->getMessage());
         }
 
         //Log::info(json_encode($this->getRequest()->getData()));
