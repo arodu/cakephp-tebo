@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace TeBo\Telegram\Response;
 
 use TeBo\TeBo;
-use Tebo\Telegram\Response\ResponseTrait;
+use TeBo\Telegram\Response\ResponseTrait;
 
 class Photo implements ResponseInterface
 {

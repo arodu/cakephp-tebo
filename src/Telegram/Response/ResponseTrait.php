@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tebo\Telegram\Response;
+namespace TeBo\Telegram\Response;
 
 trait ResponseTrait
 {

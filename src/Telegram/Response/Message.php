@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use Cake\Core\InstanceConfigTrait;
-use Cake\Http\Client\Response;
 use TeBo\TeBo;
-use Tebo\Telegram\Response\ResponseTrait;
+use TeBo\Telegram\Response\ResponseTrait;
 
 class Message implements ResponseInterface
 {
@@ -25,11 +23,21 @@ class Message implements ResponseInterface
      */
     protected string $telegramMethod = TeBo::METHOD_SEND_MESSAGE;
 
+    /**
+     * Constructor for the Message class.
+     *
+     * @param string|array|null $text The text of the message.
+     */
     public function __construct(string|array $text = null)
     {
         $this->addText($text);
     }
 
+    /**
+     * Resets the text property of the Message object.
+     *
+     * @return self
+     */
     public function resetText(): self
     {
         $this->text = [];
@@ -37,7 +45,13 @@ class Message implements ResponseInterface
         return $this;
     }
 
-    public function addText(string|array $text): self
+    /**
+     * Adds text to the message.
+     *
+     * @param string|array|null $text The text to add. It can be a string or an array of strings.
+     * @return self The updated Message object.
+     */
+    public function addText(string|array $text = null): self
     {
         if (is_string($text)) {
             $this->text[] = $text;
@@ -50,14 +64,21 @@ class Message implements ResponseInterface
         return $this;
     }
 
+    /**
+     * Get the text of the message.
+     *
+     * @return string The text of the message.
+     */
     public function getText(): string
     {
         return implode("\n", $this->text);
     }
 
     /**
-     * @param integer|string|null $chat_id
-     * @return array
+     * Get the data for the message.
+     *
+     * @param int|string|null $chat_id The ID of the chat.
+     * @return array The message data.
      */
     public function getData(int|string $chat_id = null): array
     {
@@ -66,7 +87,6 @@ class Message implements ResponseInterface
             [
                 'chat_id' => $chat_id,
                 'text' => $this->getText(),
-                'parse_mode' => 'HTML',
             ]
         );
     }
