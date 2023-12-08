@@ -18,14 +18,25 @@ class ResponseText implements ResponseInterface
         }
     }
 
-    public function resetText(?string $text = null): void
+    public function resetText(): void
     {
         $this->text = [];
     }
 
-    public function addText(string $text): void
+    public function addText(string|array $text): void
     {
-        $this->text[] = $text;
+        if (is_string($text)) {
+            $this->text[] = $text;
+
+            return;
+        }
+
+        $this->text = array_merge($this->text, $text);
+    }
+
+    public function addImage(string $url): void
+    {
+        // @todo
     }
 
     public function getText(): string
