@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
@@ -24,19 +25,19 @@ class Message implements ResponseInterface
      */
     protected string $telegramMethod = TeBo::METHOD_SEND_MESSAGE;
 
-    public function __construct(string|array $text = '')
+    public function __construct(string|array $text = null)
     {
         $this->addText($text);
     }
 
-    public function resetText(): Message
+    public function resetText(): self
     {
         $this->text = [];
 
         return $this;
     }
 
-    public function addText(string|array $text): Message
+    public function addText(string|array $text): self
     {
         if (is_string($text)) {
             $this->text[] = $text;
@@ -54,11 +55,19 @@ class Message implements ResponseInterface
         return implode("\n", $this->text);
     }
 
+    /**
+     * @param integer|string|null $chat_id
+     * @return array
+     */
     public function getData(int|string $chat_id = null): array
     {
-        return array_merge([
-            'chat_id' => $chat_id,
-            'text' => $this->getText(),
-        ], $this->getOptions());
+        return array_merge(
+            $this->getOptions(),
+            [
+                'chat_id' => $chat_id,
+                'text' => $this->getText(),
+                'parse_mode' => 'HTML',
+            ]
+        );
     }
 }

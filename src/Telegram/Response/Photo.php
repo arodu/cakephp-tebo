@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use Cake\Core\InstanceConfigTrait;
-use Cake\Http\Client\Response;
+use TeBo\TeBo;
+use Tebo\Telegram\Response\ResponseTrait;
 
 class Photo implements ResponseInterface
 {
+    use ResponseTrait;
+
     protected mixed $photo;
 
-    protected string $telegramMethod = 'sendPhoto';
+    protected string $telegramMethod = TeBo::METHOD_SEND_PHOTO;
 
     public function __construct($photo = '')
     {
@@ -24,15 +26,18 @@ class Photo implements ResponseInterface
         return $this;
     }
 
-    public function getText(): string
+    /**
+     * @param integer|string|null $chat_id
+     * @return array
+     */
+    public function getData(int|string $chat_id = null): array
     {
-        return implode("\n", []);
-    }
-
-    public function getData(): array
-    {
-        return [
-            'photo' => $this->photo,
-        ];
+        return array_merge(
+            $this->getOptions(),
+            [
+                'chat_id' => $chat_id,
+                'photo' => $this->photo,
+            ]
+        );
     }
 }
