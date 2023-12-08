@@ -5,13 +5,17 @@ namespace TeBo\Telegram\Response;
 
 use Cake\Core\InstanceConfigTrait;
 
-class Text implements ResponseInterface
+class ResponseText implements ResponseInterface
 {
     protected array $text = [];
 
-    public function __construct($text)
+    public function __construct($text = '')
     {
-        $this->text[] = $text;
+        if (is_array($text)) {
+            $this->text = $text;
+        } else {
+            $this->text[] = $text;
+        }
     }
 
     public function resetText(?string $text = null): void

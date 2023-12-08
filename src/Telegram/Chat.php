@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace TeBo\Telegram;
 
 use Cake\Core\InstanceConfigTrait;
-use Exception;
+use InvalidArgumentException;
 use TeBo\Message\MessageInterface;
 use TeBo\Telegram\Response\ResponseInterface;
 use TeBo\Utility\Bot;
@@ -27,7 +27,7 @@ class Chat
         $this->setConfig($config);
 
         if (empty($this->getConfig('id'))) {
-            throw new Exception();
+            throw new InvalidArgumentException('Chat ID is required!');
         }
     }
 
@@ -42,6 +42,6 @@ class Chat
             'text' => $message->getText(),
         ]);
 
-        return $this->_lastResult['ok'];
+        return $this->_lastResult['ok'] ?? false;
     }
 }
