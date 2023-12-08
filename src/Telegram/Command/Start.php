@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Command;
 
-use TeBo\Message\TextMessage;
 use TeBo\Telegram\Chat;
-use TeBo\Telegram\Response\Text;
+use TeBo\Telegram\Response\ResponseText;
 use TeBo\Telegram\Update;
 
 class Start extends BaseCommand
@@ -21,7 +20,7 @@ class Start extends BaseCommand
      */
     public function execute(Update $update)
     {
-        $update->getChat()->send(new Text('Replace this command!'));
-        $update->getChat()->send(new Text('<code>How to replace this command</code>'));
+        $update->getChat()->send(new ResponseText('Replace this command!'));
+        $update->getChat()->send(new ResponseText('<code>How to replace this command</code>'));
     }
 }
