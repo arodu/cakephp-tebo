@@ -9,7 +9,7 @@ return [
         ],
         'webhookUrl' => [
             '_host' => env('WEBHOOK_BASE', '127.0.0.1'),
-            '_ssl' => env('WEBHOOK_SSL', true),
+            '_https' => env('WEBHOOK_SSL', true),
             'plugin' => 'TeBo',
             'controller' => 'Api',
             'action' => 'webhook',

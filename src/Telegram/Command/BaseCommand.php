@@ -25,13 +25,4 @@ abstract class BaseCommand implements CommandInterface
         // @todo refactor
         return Text::slug(static::class);
     }
-
-    //public function send($cancel = false): void
-    //{
-    //    if ($cancel || $this->cancelSend) {
-    //        $this->cancelSend = true;
-    //
-    //        return;
-    //    }
-    //}
 }

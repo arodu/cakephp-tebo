@@ -6,19 +6,16 @@ namespace TeBo\Telegram\Command;
 
 use Cake\Core\Configure;
 use Cake\Utility\Inflector;
-use Cake\Utility\Text;
 use Exception;
-use PHPUnit\Framework\Constraint\IsInstanceOf;
-use TeBo\Message\TextMessage;
-use TeBo\Telegram\Chat;
 use TeBo\Telegram\Update;
 
 class CommandFactory
 {
 
-
-
-
+    /**
+     * @param \TeBo\Telegram\Update $update
+     * @return CommandInterface
+     */
     public static function build(Update $update): CommandInterface
     {
         $commandMap = Configure::read('tebo.command.map');
@@ -44,6 +41,10 @@ class CommandFactory
         throw new Exception();
     }
 
+    /**
+     * @param string $name
+     * @return string|null
+     */
     public static function getComandByName(string $name): ?string
     {
         $namespaces = Configure::read('tebo.command.namespaces');
