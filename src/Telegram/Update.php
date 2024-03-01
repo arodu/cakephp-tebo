@@ -6,6 +6,7 @@ namespace TeBo\Telegram;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\TeBo;
 
@@ -28,6 +29,7 @@ class Update
         $this->_originalData = $updateData;
         $this->setConfig($updateData);
         if (empty($this->getConfig('update_id'))) {
+            Log::error('Update ID is required!', ['config' => $updateData]);
             throw new InvalidArgumentException('Update ID is required!');
         }
 

@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
+use Cake\Core\InstanceConfigTrait;
+
 trait ResponseTrait
 {
+    use InstanceConfigTrait;
+
     /**
      * @var array $options The options property of the message.
      */
@@ -41,10 +45,10 @@ trait ResponseTrait
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTelegramMethod(): string
+    public function getTelegramMethod(): ?string
     {
-        return $this->telegramMethod;
+        return $this->getConfig('telegramMethod', null);
     }
 }

@@ -8,10 +8,6 @@ use TeBo\Telegram\Update;
 
 class Hello extends BaseCommand
 {
-    public function help()
-    {
-    }
-
     public function execute(Update $update)
     {
         $update->getChat()->send(new Message('Hello World from TeBo!'));

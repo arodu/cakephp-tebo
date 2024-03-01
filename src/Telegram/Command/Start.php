@@ -9,10 +9,6 @@ use TeBo\Telegram\Update;
 
 class Start extends BaseCommand
 {
-    public function help()
-    {
-    }
-
     /**
      * @param Chat $chat
      * @param array $originalData

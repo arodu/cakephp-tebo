@@ -8,21 +8,37 @@ use Cake\Utility\Text;
 abstract class BaseCommand implements CommandInterface
 {
     protected array $args = [];
-    //protected bool $cancelSend = false;
 
+    /**
+     * @param array $args
+     */
     public function __construct(array $args = [])
     {
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     */
     public function getArgs(): array
     {
         return $this->args;
     }
 
+    /**
+     * @return string
+     */
     public static function getDefaultName(): string
     {
         // @todo refactor
         return Text::slug(static::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function help(): string
+    {
+        return __('No help available');
     }
 }

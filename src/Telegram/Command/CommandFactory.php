@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace TeBo\Telegram\Command;
 
 use Cake\Core\Configure;
+use Cake\Log\Log;
 use Cake\Utility\Inflector;
 use Exception;
 use TeBo\Telegram\Update;
 
 class CommandFactory
 {
-
     /**
      * @param \TeBo\Telegram\Update $update
      * @return CommandInterface
@@ -23,6 +23,7 @@ class CommandFactory
 
         if (!$update->isCommand()) {
             // @todo custom exception
+            Log::error('Not a command!', ['update' => $update]);
             throw new Exception();
         }
 
@@ -38,6 +39,7 @@ class CommandFactory
         }
 
         // @todo custom exception
+        Log::error('Command not found!', ['update' => $update]);
         throw new Exception();
     }
 
@@ -47,7 +49,7 @@ class CommandFactory
      */
     public static function getComandByName(string $name): ?string
     {
-        $namespaces = Configure::read('tebo.command.namespaces');
+        $namespaces = Configure::read('tebo.command.namespaces', []);
 
         foreach ($namespaces as $namespace) {
             $className = $namespace . '\\' . Inflector::classify($name);
