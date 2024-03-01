@@ -12,7 +12,7 @@ interface ResponseInterface
     public function getData(int|string $chat_id = null): array;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTelegramMethod(): string;
+    public function getTelegramMethod(): ?string;
 }

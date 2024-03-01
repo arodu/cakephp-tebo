@@ -12,16 +12,16 @@ class Message implements ResponseInterface
     use ResponseTrait;
 
     /**
+     * @inheritDoc
+     */
+    protected array $_defaultConfig = [
+        'telegramMethod' => TeBo::METHOD_SEND_MESSAGE,
+    ];
+
+    /**
      * @var array $text The text property of the message.
      */
     protected array $text = [];
-
-    /**
-     * The method used for sending the Telegram message.
-     * @see https://core.telegram.org/bots/api#sendmessage
-     * @var string
-     */
-    protected string $telegramMethod = TeBo::METHOD_SEND_MESSAGE;
 
     /**
      * Constructor for the Message class.

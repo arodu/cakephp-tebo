@@ -10,9 +10,14 @@ class Photo implements ResponseInterface
 {
     use ResponseTrait;
 
-    protected mixed $photo;
+    /**
+     * @inheritDoc
+     */
+    protected array $_defaultConfig = [
+        'telegramMethod' => TeBo::METHOD_SEND_PHOTO,
+    ];
 
-    protected string $telegramMethod = TeBo::METHOD_SEND_PHOTO;
+    protected mixed $photo;
 
     public function __construct($photo = '')
     {

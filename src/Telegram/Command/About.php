@@ -9,10 +9,6 @@ use TeBo\Telegram\Update;
 
 class About extends BaseCommand
 {
-    public function help()
-    {
-    }
-
     public function execute(Update $update)
     {
         $message = new Message();
