@@ -14,6 +14,7 @@ abstract class AbstractResponse implements ResponseInterface
     protected array $_defaultConfig = [
         'telegramMethod' => null,
         'options' => [],
+        'httpOptions' => [],
     ];
 
     /**
@@ -35,5 +36,13 @@ abstract class AbstractResponse implements ResponseInterface
         }
 
         return $telegramMethod;
+    }
+
+    /**
+     * @return array
+     */
+    public function httpOptions(): array
+    {
+        return $this->getConfig('httpOptions') ?? [];
     }
 }

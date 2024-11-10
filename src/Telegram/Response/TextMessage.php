@@ -34,7 +34,7 @@ class TextMessage extends AbstractResponse
      * @param int|string|null $chat_id The ID of the chat.
      * @return array The message data.
      */
-    public function outputData(int|string $chat_id = null): array
+    public function telegramFormat(int|string $chat_id = null): array
     {
         return array_merge(
             $this->getConfig('options', []),

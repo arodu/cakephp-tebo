@@ -34,7 +34,7 @@ class Video extends AbstractResponse
     /**
      * @inheritDoc
      */
-    public function outputData(int|string|null $chat_id = null): array
+    public function telegramFormat(int|string|null $chat_id = null): array
     {
         return array_merge(
             $this->getConfig('options', []),

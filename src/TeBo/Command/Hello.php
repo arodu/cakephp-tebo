@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TeBo\TeBo\Command;
 
+use Cake\Core\Configure;
 use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Response\TextMessage;
@@ -15,6 +16,8 @@ class Hello extends AbstractCommand implements CommandInterface
      */
     public function execute(Update $update): void
     {
-        $update->getChat()->send(new TextMessage('Hello World from TeBo!'));
+        if (Configure::read('tebo.debug')) { // this only runs if the debug mode is enabled
+            $update->getChat()->send(new TextMessage('Hello World from TeBo!'));
+        }
     }
 }

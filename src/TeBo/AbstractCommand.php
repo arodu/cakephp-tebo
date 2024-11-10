@@ -10,8 +10,6 @@ abstract class AbstractCommand implements CommandInterface
 {
     protected array $args = [];
 
-    protected bool $debug = false;
-
     /**
      * @param array $args
      */
@@ -50,14 +48,6 @@ abstract class AbstractCommand implements CommandInterface
      */
     public function allowExecute(): bool
     {
-        if (!$this->debug) {
-            return true;
-        }
-
-        if (Configure::read('tebo.debug') || Configure::read('debug')) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }

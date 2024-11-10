@@ -10,9 +10,9 @@ class Photo extends AbstractResponse implements ResponseInterface
 {
     use TextTrait;
 
-    protected string $photo;
+    protected $photo;
 
-    public function __construct(?string $photo = null, string|array|null $caption = null, array $config = [])
+    public function __construct($photo = null, string|array|null $caption = null, array $config = [])
     {
         $this->setConfig($config);
         $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_PHOTO);
@@ -29,7 +29,7 @@ class Photo extends AbstractResponse implements ResponseInterface
      * @param string $photo
      * @return self
      */
-    public function addPhoto(string $photo): self
+    public function addPhoto($photo): self
     {
         $this->photo = $photo;
 
@@ -39,7 +39,7 @@ class Photo extends AbstractResponse implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function outputData(int|string|null $chat_id = null): array
+    public function telegramFormat(int|string|null $chat_id = null): array
     {
         return array_merge(
             $this->getConfig('options', []),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TeBo\TeBo\Command;
 
+use Cake\Core\Configure;
 use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Response\HtmlMessage;
@@ -16,18 +17,20 @@ class About extends AbstractCommand implements CommandInterface
      */
     public function execute(Update $update): void
     {
-        $message = new HtmlMessage();
-        $message
-            ->addText([
-                '<b>About TeBo:</b>',
-                '',
-                'TeBo is a CakePHP plugin for Telegram Bot.',
-                'It is based on the official Telegram Bot API.',
-                '',
-                'You can find the source code on GitHub:',
-                'https://github.com/arodu/cakephp-tebo',
-            ]);
+        if (Configure::read('tebo.debug')) { // this only runs if the debug mode is enabled
+            $message = new HtmlMessage();
+            $message
+                ->addText([
+                    '<b>About TeBo:</b>',
+                    '',
+                    'TeBo is a CakePHP plugin for Telegram Bot.',
+                    'It is based on the official Telegram Bot API.',
+                    '',
+                    'You can find the source code on GitHub:',
+                    'https://github.com/arodu/cakephp-tebo',
+                ]);
 
-        $update->getChat()->send($message);
+            $update->getChat()->send($message);
+        }
     }
 }

@@ -33,6 +33,11 @@ class Chat
         }
     }
 
+    public function getId(): ?int
+    {
+        return $this->getConfig('id');
+    }
+
     /**
      * @param ResponseInterface $response
      * @return boolean
@@ -46,7 +51,7 @@ class Chat
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
-        $this->lastResult = Bot::$method($response->outputData($this->getConfig('id')));
+        $this->lastResult = Bot::$method($response->telegramFormat($this->getConfig('id')), $response->httpOptions());
 
         return $this->lastResult['ok'] ?? false;
     }

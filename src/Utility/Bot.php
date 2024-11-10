@@ -41,7 +41,7 @@ class Bot
      * @param array $options
      * @return array
      */
-    public static function buildMethod(string $name, array $data, array $options = []): array
+    public static function buildMethod(string $name, array $data = [], array $options = []): array
     {
         $telegram = Configure::read('tebo.telegram');
         $url = Text::insert($telegram['api'], [
@@ -52,19 +52,19 @@ class Bot
         return [
             'url' => $url,
             'data' => $data,
-            'options' => $options,
+            'httpOptions' => $options,
         ];
     }
 
     public static function __callStatic($name, $arguments)
     {
         if (in_array($name, static::METHODS)) {
-            $method = static::buildMethod($name, $arguments[0] ?? null);
+            $method = static::buildMethod($name, $arguments[0] ?? [], $arguments[1] ?? []);
             $http = new Client();
             $response = $http->post(
                 $method['url'],
                 $method['data'],
-                $method['options'] ?? []
+                $method['httpOptions'] ?? []
             );
 
             return $response->getJson();
