@@ -4,33 +4,20 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use TeBo\TeBo;
-use TeBo\Telegram\Response\ResponseTrait;
+use TeBo\TeBoPlugin;
 
-class Message implements ResponseInterface
+class TextMessage extends AbstractResponse
 {
-    use ResponseTrait;
+    protected array $text = [];
 
     /**
      * @inheritDoc
      */
-    protected array $_defaultConfig = [
-        'telegramMethod' => TeBo::METHOD_SEND_MESSAGE,
-    ];
-
-    /**
-     * @var array $text The text property of the message.
-     */
-    protected array $text = [];
-
-    /**
-     * Constructor for the Message class.
-     *
-     * @param string|array|null $text The text of the message.
-     */
-    public function __construct(string|array $text = null)
+    public function initialize(): void
     {
-        $this->addText($text);
+        parent::initialize();
+        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_MESSAGE);
+        $this->addText($this->data ?? null);
     }
 
     /**
@@ -80,10 +67,10 @@ class Message implements ResponseInterface
      * @param int|string|null $chat_id The ID of the chat.
      * @return array The message data.
      */
-    public function getData(int|string $chat_id = null): array
+    public function outputData(int|string $chat_id = null): array
     {
         return array_merge(
-            $this->getOptions(),
+            $this->getConfig('options', []),
             [
                 'chat_id' => $chat_id,
                 'text' => $this->getText(),

@@ -11,18 +11,20 @@ return [
             '_host' => env('WEBHOOK_BASE', '127.0.0.1'),
             '_https' => env('WEBHOOK_SSL', true),
             'plugin' => 'TeBo',
-            'controller' => 'Api',
+            'controller' => 'Bot',
             'action' => 'webhook',
         ],
-        'obfuscation' => env('OBFUSCATION', null),
+        'obfuscation' => env('WEBHOOK_OBFUSCATION', null),
         'command' => [
-            'map' => [
-                'start' => \TeBo\Telegram\Command\Start::class,
+            'mapper' => [
+                'default' => \TeBo\TeBo\Command\DefaultCommand::class,
+                'start' => \TeBo\TeBo\Command\Start::class,
+                'about' => \TeBo\TeBo\Command\About::class,
+                'hello' => \TeBo\TeBo\Command\Hello::class,
             ],
             'namespaces' => [
-                0 => '\App\Telegram\Command',
-                1 => '\TeBo\Telegram\Command',
+                '\App\TeBo\Command',
             ],
-        ]
+        ],
     ],
 ];

@@ -28,10 +28,9 @@ class Bot
      */
     public static function getWebhookUrl(): string
     {
-        $config = Configure::read('tebo');
-        $url = Router::url($config['webhookUrl'], true);
-
-        return $url;
+        $webhookUrl = Configure::read('tebo.webhookUrl');
+        
+        return Router::url($webhookUrl, true);
     }
 
     public static function buildMethod($name, $data): array

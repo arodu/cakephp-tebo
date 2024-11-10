@@ -2,16 +2,21 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Command;
+namespace TeBo\TeBo\Command;
 
-use TeBo\Telegram\Response\Message;
+use TeBo\TeBo\AbstractCommand;
+use TeBo\TeBo\CommandInterface;
+use TeBo\Telegram\Response\HtmlMessage;
 use TeBo\Telegram\Update;
 
-class About extends BaseCommand
+class About extends AbstractCommand implements CommandInterface
 {
-    public function execute(Update $update)
+    /**
+     * @inheritDoc
+     */
+    public function execute(Update $update): void
     {
-        $message = new Message();
+        $message = new HtmlMessage();
         $message
             ->addText([
                 '<b>About TeBo:</b>',
@@ -21,9 +26,6 @@ class About extends BaseCommand
                 '',
                 'You can find the source code on GitHub:',
                 'https://github.com/arodu/cakephp-tebo',
-            ])
-            ->addOptions([
-                'parse_mode' => 'HTML',
             ]);
 
         $update->getChat()->send($message);

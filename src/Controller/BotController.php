@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace TeBo\Controller;
 
-use Cake\Event\EventInterface;
+use Cake\Log\Log;
 use Exception;
 use TeBo\Controller\AppController;
-use TeBo\TeBo\Command\HelloWorld;
-use TeBo\Telegram\Chat;
-use TeBo\Telegram\Command\CommandFactory;
+use TeBo\TeBo\CommandFactory as TeBoCommandFactory;
 use TeBo\Telegram\Update;
 
 /**
@@ -28,13 +26,15 @@ class BotController extends AppController
         try {
             $data = $this->getRequest()->getData();
             $update = new Update($data);
-    
-            if ($update->isCommand()) {
-                $command = CommandFactory::build($update);
+            $command = TeBoCommandFactory::build($update);
+
+            if ($command) {
                 $command->execute($update);
+            } else {
+                Log::notice('Command not found!', ['update' => $update->getOriginalData()]);
             }
         } catch (Exception $e) {
-            debug($e);
+            Log::error($e->getMessage());
         }
 
         return $this->response->withStatus(200);

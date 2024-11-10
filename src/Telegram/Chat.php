@@ -39,14 +39,14 @@ class Chat
      */
     public function send(ResponseInterface $response): bool
     {
-        $method = $response->getTelegramMethod();
+        $method = $response->telegramMethod();
 
         if (empty($method)) {
             Log::error('Telegram method is required!', ['response' => $response]);
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
-        $this->lastResult = Bot::$method($response->getData($this->getConfig('id')));
+        $this->lastResult = Bot::$method($response->outputData($this->getConfig('id')));
 
         return $this->lastResult['ok'] ?? false;
     }

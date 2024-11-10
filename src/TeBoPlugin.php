@@ -1,20 +1,29 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo;
 
+use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
+use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Http\MiddlewareQueue;
+use Cake\Log\Log;
 use Cake\Routing\RouteBuilder;
-use Cake\Console\CommandCollection;
 
 /**
  * Plugin for TeBo
  */
-class Plugin extends BasePlugin
+class TeBoPlugin extends BasePlugin
 {
+    public const EVENT_NEW_UPDATE = 'TeBo.newUpdate';
+
+    public const METHOD_SEND_MESSAGE = 'sendMessage';
+    public const METHOD_SEND_PHOTO = 'sendPhoto';
+    public const METHOD_SEND_VIDEO = 'sendVideo';
+
     /**
      * Load all the plugin configuration and bootstrap logic.
      *
@@ -26,7 +35,12 @@ class Plugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        parent::bootstrap($app);
+        try {
+            Configure::load('TeBo.tebo', 'default', true);
+            Configure::load('tebo', 'default', true);
+        } catch (\Exception $e) {
+            Log::notice($e->getMessage());
+        }
     }
 
     /**
@@ -40,6 +54,24 @@ class Plugin extends BasePlugin
      */
     public function routes(RouteBuilder $routes): void
     {
+        $routes->plugin(
+            'TeBo',
+            ['path' => '/tebo'],
+            function (RouteBuilder $builder) {
+                $webhookRoute = '/webhook';
+                $obfuscation = Configure::read('tebo.obfuscation');
+                if (!empty($obfuscation) && is_string($obfuscation)) {
+                    $webhookRoute = '/' . $obfuscation;
+                }
+
+                $webhookUrl = Configure::read('tebo.webhookUrl');
+                $builder->connect($webhookRoute, [
+                    'plugin' => $webhookUrl['plugin'],
+                    'controller' => $webhookUrl['controller'],
+                    'action' => $webhookUrl['action'],
+                ]);
+            }
+        );
         parent::routes($routes);
     }
 
@@ -62,7 +94,7 @@ class Plugin extends BasePlugin
      * @param \Cake\Console\CommandCollection $commands The command collection to update.
      * @return \Cake\Console\CommandCollection
      */
-    public function console(CommandCollection $commands) : CommandCollection
+    public function console(CommandCollection $commands): CommandCollection
     {
         // Add your commands here
 

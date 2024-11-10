@@ -77,21 +77,42 @@ class TeboWebhookCommand extends Command
             if (empty($url)) {
                 $url = Bot::getWebhookUrl();
             }
-            debug(Bot::setWebhook(['url' => $url]));
+            $this->formatPrint(Bot::setWebhook(['url' => $url]), $io);
         
         } elseif ($args->getOption('delete')) {
-            debug(Bot::deleteWebhook());
+            $this->formatPrint(Bot::deleteWebhook(), $io);
         
         } elseif ($args->getOption('info')) {
-            debug(Bot::getWebhookInfo());
+            $this->formatPrint(Bot::getWebhookInfo(), $io);
 
         } elseif ($args->getOption('bot-info')) {
-            debug(Bot::getMe());
+            $this->formatPrint(Bot::getMe(), $io);
         
         } else {
             $io->out($this->getOptionParser()->help());
         }
 
         return static::CODE_SUCCESS;
+    }
+
+
+    public function formatPrint(array $data, ConsoleIo $io)
+    {
+        if ($data['ok'] === false) {
+            $io->error($data['description']);
+            return;
+        }
+
+        $io->success('Success');
+        if (is_array($data['result'])) {
+            foreach($data['result'] as $key => $value) {
+                if (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                $io->out($key . ': ' . $value);
+            }
+        } elseif (isset($data['description'])) {
+            $io->out($data['description']);
+        }
     }
 }

@@ -1,44 +1,43 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use TeBo\TeBo;
-use TeBo\Telegram\Response\ResponseTrait;
+use TeBo\TeBoPlugin;
 
-class Photo implements ResponseInterface
+class Photo extends AbstractResponse
 {
-    use ResponseTrait;
+    protected string $photo;
 
     /**
      * @inheritDoc
      */
-    protected array $_defaultConfig = [
-        'telegramMethod' => TeBo::METHOD_SEND_PHOTO,
-    ];
-
-    protected mixed $photo;
-
-    public function __construct($photo = '')
+    public function initialize(): void
     {
-        $this->addPhoto($photo);
+        parent::initialize();
+        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_PHOTO);
+        $this->addPhoto($this->data ?? null);
     }
 
+    /**
+     * @param mixed $photo
+     * @return self
+     */
     public function addPhoto(mixed $photo): self
     {
         $this->photo = $photo;
-
+    
         return $this;
     }
 
     /**
-     * @param integer|string|null $chat_id
-     * @return array
+     * @inheritDoc
      */
-    public function getData(int|string $chat_id = null): array
+    public function outputData(int|string|null $chat_id = null): array
     {
         return array_merge(
-            $this->getOptions(),
+            $this->getConfig('options', []),
             [
                 'chat_id' => $chat_id,
                 'photo' => $this->photo,

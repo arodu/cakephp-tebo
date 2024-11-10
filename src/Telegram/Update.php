@@ -8,7 +8,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Log\Log;
 use InvalidArgumentException;
-use TeBo\TeBo;
+use TeBo\TeBoPlugin;
 
 class Update
 {
@@ -33,7 +33,7 @@ class Update
             throw new InvalidArgumentException('Update ID is required!');
         }
 
-        $event = new Event(TeBo::EVENT_NEW_UPDATE, $this);
+        $event = new Event(TeBoPlugin::EVENT_NEW_UPDATE, $this);
         EventManager::instance()->dispatch($event);
     }
 
@@ -69,7 +69,7 @@ class Update
     public function isCommand(): bool
     {
         $messageEntity = $this->getConfig('message.entities.0', null);
-        $isCommand = $messageEntity['type'] === 'bot_command' && $messageEntity['offset'] === 0;
+        $isCommand = ($messageEntity['type'] ?? null) === 'bot_command' && ($messageEntity['offset'] ?? null) === 0;
         if (!empty($messageEntity) && $isCommand) {
             return true;
         }
@@ -94,19 +94,4 @@ class Update
 
         return trim($commandName, ' /');
     }
-
-    /**
-     * Returns the parameters of the command if the update is a command.
-     *
-     * @return array|null The parameters of the command, or null if the update is not a command.
-     */
-    public function getCommandParams(): ?array
-    {
-        if (!$this->isCommand()) {
-            return null;
-        }
-
-        return [];
-    }
-
 }

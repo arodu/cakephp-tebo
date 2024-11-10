@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Command;
+namespace TeBo\TeBo;
 
 use Cake\Utility\Text;
 
-abstract class BaseCommand implements CommandInterface
+abstract class AbstractCommand implements CommandInterface
 {
     protected array $args = [];
 
