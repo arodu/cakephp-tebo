@@ -29,12 +29,14 @@ class CommandFactory
             return new $commandClass();
         }
 
-        $commandClass = static::getComandFromNamespaces($commandName);
-        if (!empty($commandClass)) {
-            return new $commandClass();
+        if ($commandName) {
+            $commandClass = static::getComandFromNamespaces($commandName);
+            if (!empty($commandClass)) {
+                return new $commandClass();
+            }
         }
 
-        return static::getDefaultCommand() ?? null;
+        return null;
     }
 
     /**

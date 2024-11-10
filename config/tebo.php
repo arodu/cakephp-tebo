@@ -21,6 +21,7 @@ return [
                 'start' => \TeBo\TeBo\Command\Start::class,
                 'about' => \TeBo\TeBo\Command\About::class,
                 'hello' => \TeBo\TeBo\Command\Hello::class,
+                'example' => \TeBo\TeBo\Command\Example::class,
             ],
             'namespaces' => [
                 '\App\TeBo\Command',

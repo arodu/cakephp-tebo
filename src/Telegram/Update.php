@@ -6,9 +6,12 @@ namespace TeBo\Telegram;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\Http\Client\Message;
 use Cake\Log\Log;
+use Cake\Utility\Hash;
 use InvalidArgumentException;
 use TeBo\TeBoPlugin;
+use TeBo\Utility\Bot;
 
 class Update
 {
@@ -33,6 +36,7 @@ class Update
             throw new InvalidArgumentException('Update ID is required!');
         }
 
+        Bot::debug('New update received', $updateData);
         $event = new Event(TeBoPlugin::EVENT_NEW_UPDATE, $this);
         EventManager::instance()->dispatch($event);
     }
@@ -93,5 +97,22 @@ class Update
         $commandName = substr($text, $messageEntity['offset'], $messageEntity['length']);
 
         return trim($commandName, ' /');
+    }
+
+    /**
+     * @return MessageType
+     */
+    public function messageType(): MessageType
+    {
+        return MessageType::getFromMessage($this->getMessage());
+    }
+
+    /**
+     * @param string|null $path
+     * @return mixed
+     */
+    public function getMessage(?string $path = null): mixed
+    {
+        return Hash::get($this->getConfig('message') ?? [], $path);
     }
 }

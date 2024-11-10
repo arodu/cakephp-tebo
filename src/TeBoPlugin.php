@@ -41,6 +41,8 @@ class TeBoPlugin extends BasePlugin
         } catch (\Exception $e) {
             Log::notice($e->getMessage());
         }
+
+        define('TEBO_CORE_PATH', ROOT . DS . 'vendor' . DS . 'arodu' . DS . 'tebo');
     }
 
     /**

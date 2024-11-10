@@ -6,28 +6,33 @@ namespace TeBo\Telegram\Response;
 
 use TeBo\TeBoPlugin;
 
-class Photo extends AbstractResponse
+class Photo extends AbstractResponse implements ResponseInterface
 {
+    use TextTrait;
+
     protected string $photo;
 
-    /**
-     * @inheritDoc
-     */
-    public function initialize(): void
+    public function __construct(?string $photo = null, string|array|null $caption = null, array $config = [])
     {
-        parent::initialize();
+        $this->setConfig($config);
         $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_PHOTO);
-        $this->addPhoto($this->data ?? null);
+        if ($photo) {
+            $this->addPhoto($photo);
+        }
+        if ($caption) {
+            $this->addText($caption);
+        }
+        $this->initialize();
     }
 
     /**
-     * @param mixed $photo
+     * @param string $photo
      * @return self
      */
-    public function addPhoto(mixed $photo): self
+    public function addPhoto(string $photo): self
     {
         $this->photo = $photo;
-    
+
         return $this;
     }
 
@@ -41,6 +46,7 @@ class Photo extends AbstractResponse
             [
                 'chat_id' => $chat_id,
                 'photo' => $this->photo,
+                'caption' => $this->getText() ?? null,
             ]
         );
     }

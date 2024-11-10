@@ -5,6 +5,7 @@ namespace TeBo\Utility;
 
 use Cake\Core\Configure;
 use Cake\Http\Client;
+use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Utility\Text;
 
@@ -19,6 +20,7 @@ class Bot
         'getMe',
         'deleteWebhook',
         'sendMessage',
+        'sendPhoto',
     ];
 
     /**
@@ -33,7 +35,13 @@ class Bot
         return Router::url($webhookUrl, true);
     }
 
-    public static function buildMethod($name, $data): array
+    /**
+     * @param string $name
+     * @param array $data
+     * @param array $options
+     * @return array
+     */
+    public static function buildMethod(string $name, array $data, array $options = []): array
     {
         $telegram = Configure::read('tebo.telegram');
         $url = Text::insert($telegram['api'], [
@@ -44,6 +52,7 @@ class Bot
         return [
             'url' => $url,
             'data' => $data,
+            'options' => $options,
         ];
     }
 
@@ -54,10 +63,26 @@ class Bot
             $http = new Client();
             $response = $http->post(
                 $method['url'],
-                $method['data']
+                $method['data'],
+                $method['options'] ?? []
             );
 
             return $response->getJson();
+        } else {
+            throw new \BadMethodCallException('Method not found');
+        }
+    }
+
+    /**
+     * @param string $message
+     * @param array $data
+     * @return void
+     */
+    public static function debug(string $message, array $data = []): void
+    {
+        $debug = Configure::read('tebo.debug');
+        if ($debug) {
+            Log::debug($message . ': ' . json_encode($data));
         }
     }
 }

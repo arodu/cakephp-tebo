@@ -12,26 +12,13 @@ abstract class AbstractResponse implements ResponseInterface
     use InstanceConfigTrait;
 
     protected array $_defaultConfig = [
-        'telegramMethod' => TeBoPlugin::METHOD_SEND_MESSAGE,
+        'telegramMethod' => null,
         'options' => [],
     ];
 
-    protected mixed $data;
-
-    public function __construct(mixed $data = null, array $config = [])
-    {
-        $this->setConfig($config);
-        $this->addData($data);
-        $this->initialize();
-    }
-
-    public function addData(mixed $data): self
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
     }
@@ -41,6 +28,12 @@ abstract class AbstractResponse implements ResponseInterface
      */
     public function telegramMethod(): string
     {
-        return $this->getConfig('telegramMethod');
+        $telegramMethod = $this->getConfig('telegramMethod');
+
+        if (empty($telegramMethod)) {
+            throw new \InvalidArgumentException('Telegram method is required!');
+        }
+
+        return $telegramMethod;
     }
 }

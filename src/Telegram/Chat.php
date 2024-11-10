@@ -50,4 +50,14 @@ class Chat
 
         return $this->lastResult['ok'] ?? false;
     }
+
+    /**
+     * Get the last result of the chat.
+     *
+     * @return array|null The last result of the chat.
+     */
+    public function getLastResult(): ?array
+    {
+        return $this->lastResult;
+    }
 }

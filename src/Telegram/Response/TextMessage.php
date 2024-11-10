@@ -8,7 +8,17 @@ use TeBo\TeBoPlugin;
 
 class TextMessage extends AbstractResponse
 {
+    use TextTrait;
+
     protected array $text = [];
+
+    public function __construct(string|array|null $text = null, array $config = [])
+    {
+        $this->setConfig($config);
+        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_MESSAGE);
+        $this->addText($text);
+        $this->initialize();
+    }
 
     /**
      * @inheritDoc
@@ -16,49 +26,6 @@ class TextMessage extends AbstractResponse
     public function initialize(): void
     {
         parent::initialize();
-        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_MESSAGE);
-        $this->addText($this->data ?? null);
-    }
-
-    /**
-     * Resets the text property of the Message object.
-     *
-     * @return self
-     */
-    public function resetText(): self
-    {
-        $this->text = [];
-
-        return $this;
-    }
-
-    /**
-     * Adds text to the message.
-     *
-     * @param string|array|null $text The text to add. It can be a string or an array of strings.
-     * @return self The updated Message object.
-     */
-    public function addText(string|array $text = null): self
-    {
-        if (is_string($text)) {
-            $this->text[] = $text;
-        }
-
-        if (is_array($text)) {
-            $this->text = array_merge($this->text, $text);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the text of the message.
-     *
-     * @return string The text of the message.
-     */
-    public function getText(): string
-    {
-        return implode("\n", $this->text);
     }
 
     /**

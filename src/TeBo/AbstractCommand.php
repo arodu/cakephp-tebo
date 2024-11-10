@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace TeBo\TeBo;
 
+use Cake\Core\Configure;
 use Cake\Utility\Text;
 
 abstract class AbstractCommand implements CommandInterface
 {
     protected array $args = [];
+
+    protected bool $debug = false;
 
     /**
      * @param array $args
@@ -40,5 +43,21 @@ abstract class AbstractCommand implements CommandInterface
     public function help(): string
     {
         return __('No help available');
+    }
+
+    /**
+     * @return boolean
+     */
+    public function allowExecute(): bool
+    {
+        if (!$this->debug) {
+            return true;
+        }
+
+        if (Configure::read('tebo.debug') || Configure::read('debug')) {
+            return true;
+        }
+
+        return false;
     }
 }
