@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Telegram;
@@ -31,9 +32,9 @@ enum MessageType: string
     const GROUP_POLL = 'poll';
     const GROUP_CONTACT = 'contact';
 
-    public static function getFromMessage(array $message): self
+    public static function getFromMessage(?array $message): self
     {
-        $type = Hash::get($message, 'entities.0.type');
+        $type = Hash::get($message ?? [], 'entities.0.type');
         return match (true) {
             $type === 'bot_command' => self::COMMAND,
             $type === 'url' => self::LINK,
