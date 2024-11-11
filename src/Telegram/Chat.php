@@ -25,7 +25,7 @@ class Chat
      */
     public function __construct($config = [])
     {
-        $this->setConfig($config);
+        $this->setConfig($config ?? []);
 
         if (empty($this->getConfig('id'))) {
             Log::error('Chat ID is required!', ['config' => $config]);

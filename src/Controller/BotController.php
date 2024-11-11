@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Controller;
@@ -44,9 +45,9 @@ class BotController extends AppController
 
             return $this->response->withStatus(200);
         } catch (Exception $e) {
-            Log::error($e->getMessage());
+            Log::error($e->getMessage() . ': ' . json_encode($update->getOriginalData()));
 
-            return $this->response->withStatus(500);
+            return $this->response->withStatus(200);
         }
     }
 }
