@@ -80,9 +80,8 @@ class Bot
      */
     public static function debug(string $message, array $data = []): void
     {
-        $debug = Configure::read('tebo.debug');
-        if ($debug) {
-            Log::debug($message . ': ' . json_encode($data));
+        if (Configure::read('debug')) {
+            Log::debug($message . ': ' . json_encode($data), 'tebo');
         }
     }
 }

@@ -10,8 +10,10 @@ use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Http\MiddlewareQueue;
+use Cake\Log\Engine\FileLog;
 use Cake\Log\Log;
 use Cake\Routing\RouteBuilder;
+use TeBo\Utility\Bot;
 
 /**
  * Plugin for TeBo
@@ -35,11 +37,22 @@ class TeBoPlugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
+        if (!Log::getConfig('tebo')) {
+            Log::setConfig('tebo', [
+                'className' => FileLog::class,
+                'path' => LOGS,
+                'file' => 'debug_tebo',
+                'url' => env('LOG_TEBO_URL', null),
+                'scopes' => ['tebo'],
+                'levels' => ['notice', 'info', 'debug'],
+            ]);
+        }
+
         try {
             Configure::load('TeBo.tebo', 'default', true);
             Configure::load('tebo', 'default', true);
         } catch (\Exception $e) {
-            Log::notice($e->getMessage());
+            Bot::debug($e->getMessage());
         }
 
         define('TEBO_CORE_PATH', ROOT . DS . 'vendor' . DS . 'arodu' . DS . 'tebo');
