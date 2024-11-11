@@ -48,6 +48,10 @@ class Example extends AbstractCommand implements CommandInterface
             //$file = fopen(TEBO_CORE_PATH . DS . '/resources/tebo.jpg', 'rb');
             //$photo = new Photo($file, 'This is a placeholder image.');
             //$update->getChat()->send($photo);
+
+            // send a photo example with caption
+            //$photo = new Photo('https://placehold.it/300x200', 'This is a placeholder image.');
+            //$update->getChat()->send($photo);
         }
     }
 }

@@ -1,7 +1,7 @@
 
 # TeBo Plugin for CakePHP 5
 
-TeBo is a plugin for integrating a Telegram bot into CakePHP 5 applications, allowing configuration and management of custom commands with easy setup.
+TeBo is a plugin that integrates a Telegram bot into CakePHP 5 applications, allowing configuration and management of custom commands with an easy setup.
 
 ## Installation
 
@@ -15,7 +15,7 @@ TeBo is a plugin for integrating a Telegram bot into CakePHP 5 applications, all
    bin/cake plugin load TeBo
    ```
 
-3. Add your Telegram bot token in the `.env` file:
+3. Add your Telegram bot token to the `.env` file:
    ```bash
    export TELEGRAM_TOKEN="xxxxx"
    ```
@@ -30,25 +30,25 @@ bin/cake tebo
 
 The available options are:
 
-1. **Get Webhook URL**: Displays the current webhook URL configured in the local system.
-2. **Set Webhook to Telegram**: Sets the webhook in Telegram, linking the bot to a specific URL to receive updates.
-3. **Get Webhook Info from Telegram**: Shows information about the webhook configured in Telegram, including status and connection details.
+1. **Get Webhook URL**: Displays the current webhook URL configured on the local system.
+2. **Set Webhook to Telegram**: Sets the webhook on Telegram, linking the bot to a specific URL to receive updates.
+3. **Get Webhook Info from Telegram**: Shows information about the webhook configured on Telegram, including status and connection details.
 
 ### Additional Configuration (Optional)
 
 You can add the following values to the `.env` file to enhance webhook functionality:
 
 ```bash
-export WEBHOOK_OBFUSCATION="string_key"
-export WEBHOOK_BASE="url_base"
+export WEBHOOK_OBFUSCATION="your_obfuscation_key_here"
+export WEBHOOK_BASE="your_base_url_here"
 ```
 
-- **WEBHOOK_OBFUSCATION**: Obfuscates the webhook URL, providing an additional security layer.
+- **WEBHOOK_OBFUSCATION**: Obfuscates the webhook URL, adding an additional security layer.
 - **WEBHOOK_BASE**: Sets the base domain for the webhook URL. If not specified, `127.0.0.1` is used, which is incompatible with the Telegram API.
 
 ## Bot Testing
 
-Once the webhook and token are configured, the bot should be ready to work. You can test it from Telegram using the following commands:
+Once the webhook and token are configured, the bot should be ready to work. You can test it on Telegram using the following commands:
 
 - `/start`
 - `/hello`
@@ -56,13 +56,12 @@ Once the webhook and token are configured, the bot should be ready to work. You 
 
 ## Customization
 
-To customize the bot options, you can create a configuration file in `config/tebo.php` with the following structure:
+To customize the bot's options, you can create a configuration file in `config/tebo.php` with the following structure:
 
 ```php
 <?php
 return [
     'tebo' => [
-        'debug' => true, // Sets whether the bot is in debug mode.
         'webhookUrl' => [ // Specifies the webhook route, useful for custom development.
             'plugin' => 'TeBo', 
             'controller' => 'Bot',
@@ -70,7 +69,7 @@ return [
         ],
         'obfuscation' => env('WEBHOOK_OBFUSCATION', null), // Sets the webhook URL obfuscation.
         'command' => [
-            'mapper' => [ // Command mapping, where custom commands can be added.
+            'mapper' => [ // Command mapping, allowing for custom commands.
                 'default' => \TeBo\TeBo\Command\DefaultCommand::class, // Default command if no other command is found.
                 'start' => \TeBo\TeBo\Command\Start::class, 
                 'about' => \TeBo\TeBo\Command\About::class,
@@ -78,11 +77,94 @@ return [
             ],
             'namespaces' => [
                 '\App\TeBo\Command', // Defines additional namespaces for custom commands.
-                // Class names must match commands; for example, `/prices` should correspond to `\App\TeBo\Command\Prices` and implement `\TeBo\TeBo\CommandInterface`.
+                // Command classes must match commands; for example, `/prices` should correspond to `\App\TeBo\Command\Prices` and implement `\TeBo\TeBo\CommandInterface`.
             ],
         ],
     ],
 ];
+```
+
+## Usage
+
+The plugin provides a default command that can be extended to create custom commands. To create a new command, follow these steps:
+
+1. Create a new command class in the `src/Command` directory.
+2. Implement the `CommandInterface` interface.
+3. Add the command to the `config/tebo.php` file.
+
+```php
+<?php
+namespace App\TeBo\Command;
+
+use TeBo\TeBo\AbstractCommand;
+use TeBo\TeBo\CommandInterface;
+use TeBo\Telegram\Response\TextMessage;
+use TeBo\Telegram\Update;
+
+class Prices extends AbstractCommand implements CommandInterface
+{
+    public function execute(Update $update): string
+    {
+        $update->getChat()->send(new TextMessage('The current prices are: $100'));
+    }
+}
+```
+
+To add the command to the configuration file:
+
+```php
+'command' => [
+    'mapper' => [
+        'prices' => \App\TeBo\Command\Prices::class,
+    ],
+],
+```
+
+After adding the command, you can test it by sending `/prices` to the bot.
+
+### Send an HTML Formatted Message
+To send a message with HTML formatting, use HtmlMessage:
+
+```php
+$update->getChat()->send(new HtmlMessage([
+    '<b>HTML Message</b>',
+    '',
+    'This is an example of an HTML message.',
+    'You can use basic HTML tags to format the text.',
+    'Example: <b>bold</b>, <i>italic</i>, <a href="https://example.com">link</a>',
+    'Refer to Telegram API documentation for more info.',
+]));
+```
+
+In this example, HTML tags such as `<b>`, `<i>`, `<a>`, and `<code>` are supported for text formatting.
+
+### Send a Photo
+- **Example 1**: Send a Local Photo  
+If the image is stored locally, use the path to the image file:
+
+```php
+$file = fopen(TEBO_CORE_PATH . DS . '/resources/tebo.jpg', 'rb');
+$photo = new Photo($file, 'This is a placeholder image.');
+$update->getChat()->send($photo);
+```
+
+- **Example 2**: Send a Photo from a URL with a Caption  
+You can also send a photo from a URL with a custom caption:
+
+```php
+$photo = new Photo('https://placehold.it/300x200');
+$update->getChat()->send($photo);
+```
+
+### Sending with a chat ID
+
+To send a message to a specific chat ID, use the following code:
+
+```php
+$chatId = '12345678'; // The Telegram chat ID to send the message to
+$chat = new \TeBo\Telegram\Chat(['id' => $chatId]); // Creates a Chat instance with the specified ID
+$message = new \TeBo\Telegram\Response\TextMessage('Hello!'); // Creates the text message to send
+$chat->send($message); // Sends the message to the specified chat
 ```
 
 ## Notes
@@ -92,4 +174,3 @@ return [
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
