@@ -4,13 +4,20 @@ declare(strict_types=1);
 namespace TeBo\TeBo\Command;
 
 use Cake\Core\Configure;
-use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class Hello extends AbstractCommand implements CommandInterface
+class Hello implements CommandInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function help(): string
+    {
+        return __('No help available');
+    }
+
     /**
      * @inheritDoc
      */

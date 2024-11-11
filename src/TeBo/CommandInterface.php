@@ -9,18 +9,13 @@ use TeBo\Telegram\Update;
 interface CommandInterface
 {
     /**
-     * @return string
+     * @return string|null
      */
-    public function help(): string;
+    public function help(): ?string;
 
     /**
      * @param Update $update
      * @return void
      */
     public function execute(Update $update): void;
-
-    /**
-     * @return boolean
-     */
-    public function allowExecute(): bool;
 }

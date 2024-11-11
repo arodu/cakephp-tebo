@@ -1,14 +1,22 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\TeBo\Command;
 
-use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Update;
 
-class DefaultCommand extends AbstractCommand implements CommandInterface
+class DefaultCommand implements CommandInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function help(): string
+    {
+        return __('No help available');
+    }
+
     /**
      * @inheritDoc
      */

@@ -5,15 +5,22 @@ declare(strict_types=1);
 namespace TeBo\TeBo\Command;
 
 use Cake\Core\Configure;
-use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Response\HtmlMessage;
 use TeBo\Telegram\Response\Photo;
 use TeBo\Telegram\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class Example extends AbstractCommand implements CommandInterface
+class Example implements CommandInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function help(): string
+    {
+        return __('No help available');
+    }
+
     /**
      * this command is called only if tebo.debug is set to true
      * 

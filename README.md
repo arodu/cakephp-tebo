@@ -96,14 +96,18 @@ The plugin provides a default command that can be extended to create custom comm
 <?php
 namespace App\TeBo\Command;
 
-use TeBo\TeBo\AbstractCommand;
 use TeBo\TeBo\CommandInterface;
 use TeBo\Telegram\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class Prices extends AbstractCommand implements CommandInterface
+class Prices implements CommandInterface
 {
-    public function execute(Update $update): string
+    public function help(): ?string
+    {
+        return null;
+    }
+
+    public function execute(Update $update): void
     {
         $update->getChat()->send(new TextMessage('The current prices are: $100'));
     }

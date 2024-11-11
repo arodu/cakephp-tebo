@@ -36,11 +36,6 @@ class BotController extends AppController
                 return $this->response->withStatus(200);
             }
 
-            if (!$command->allowExecute()) {
-                Log::notice('Command not allowed!', ['update' => $update->getOriginalData()]);
-                return $this->response->withStatus(200);
-            }
-
             $command->execute($update);
 
             return $this->response->withStatus(200);
