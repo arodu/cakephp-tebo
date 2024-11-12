@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace TeBo\TeBo\Command;
 
 use Cake\Core\Configure;
-use TeBo\TeBo\CommandInterface;
+use TeBo\TeBo\TeBoCommand;
 use TeBo\Telegram\Response\HtmlMessage;
 use TeBo\Telegram\Response\Photo;
 use TeBo\Telegram\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class Example implements CommandInterface
+class Example extends TeBoCommand
 {
     /**
      * this command is called only if tebo.debug is set to true

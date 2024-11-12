@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace TeBo\TeBo\Command;
 
-use TeBo\TeBo\CommandInterface;
+use TeBo\TeBo\TeBoCommand;
 use TeBo\Telegram\Update;
 
-class DefaultCommand implements CommandInterface
+class DefaultCommand extends TeBoCommand
 {
     /**
      * @inheritDoc

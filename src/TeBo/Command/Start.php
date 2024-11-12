@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace TeBo\TeBo\Command;
 
 use Cake\Core\Configure;
-use TeBo\TeBo\CommandInterface;
+use TeBo\TeBo\TeBoCommand;
 use TeBo\Telegram\Chat;
 use TeBo\Telegram\Response\HtmlMessage;
 use TeBo\Telegram\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class Start implements CommandInterface
+class Start extends TeBoCommand
 {
     const DESCRIPTION = 'Start command';
 

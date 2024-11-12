@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace TeBo\TeBo\Command;
 
 use Cake\Core\Configure;
-use TeBo\TeBo\CommandInterface;
+use TeBo\TeBo\TeBoCommand;
 use TeBo\Telegram\Response\HtmlMessage;
 use TeBo\Telegram\Update;
 
-class About implements CommandInterface
+class About extends TeBoCommand
 {
     /**
      * @inheritDoc

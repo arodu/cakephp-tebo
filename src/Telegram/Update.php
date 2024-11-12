@@ -6,11 +6,11 @@ namespace TeBo\Telegram;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Client\Message;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
 use TeBo\TeBoPlugin;
+use TeBo\Telegram\Response\ResponseInterface;
 use TeBo\Utility\Bot;
 
 class Update
@@ -66,6 +66,17 @@ class Update
     }
 
     /**
+     * Reply to the update.
+     * 
+     * @param ResponseInterface $response
+     * @return boolean
+     */
+    public function reply(ResponseInterface $response): bool
+    {
+        return $this->getChat()->send($response);
+    }
+
+    /**
      * Checks if the update is a command.
      *
      * @return bool Returns true if the update is a command, false otherwise.
@@ -113,6 +124,11 @@ class Update
      */
     public function getMessage(?string $path = null): mixed
     {
-        return Hash::get($this->getConfig('message') ?? [], $path);
+        $message = $this->getOriginalData()['message'];
+        if (empty($path)) {
+            return $message;
+        }
+
+        return Hash::get($message ?? [], $path);
     }
 }
