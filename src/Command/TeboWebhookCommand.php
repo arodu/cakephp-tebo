@@ -14,6 +14,8 @@ use TeBo\Utility\Bot;
  */
 class TeboWebhookCommand extends Command
 {
+    use FormatPrintTrait;
+
     /**
      * @inheritDoc
      */
@@ -93,26 +95,5 @@ class TeboWebhookCommand extends Command
         }
 
         return static::CODE_SUCCESS;
-    }
-
-
-    public function formatPrint(array $data, ConsoleIo $io)
-    {
-        if ($data['ok'] === false) {
-            $io->error($data['description']);
-            return;
-        }
-
-        $io->success('Success');
-        if (is_array($data['result'])) {
-            foreach($data['result'] as $key => $value) {
-                if (is_bool($value)) {
-                    $value = $value ? 'true' : 'false';
-                }
-                $io->out($key . ': ' . $value);
-            }
-        } elseif (isset($data['description'])) {
-            $io->out($data['description']);
-        }
     }
 }

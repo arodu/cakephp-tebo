@@ -12,13 +12,7 @@ use TeBo\Telegram\Update;
 
 class Start implements CommandInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function help(): string
-    {
-        return __('No help available');
-    }
+    const DESCRIPTION = 'Start command';
 
     /**
      * @param Chat $chat

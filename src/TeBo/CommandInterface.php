@@ -8,10 +8,7 @@ use TeBo\Telegram\Update;
 
 interface CommandInterface
 {
-    /**
-     * @return string|null
-     */
-    public function help(): ?string;
+    const DESCRIPTION = null;
 
     /**
      * @param Update $update

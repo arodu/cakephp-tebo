@@ -21,6 +21,9 @@ class Bot
         'deleteWebhook',
         'sendMessage',
         'sendPhoto',
+        'setMyCommands',
+        'getMyCommands',
+        'deleteMyCommands',
     ];
 
     /**

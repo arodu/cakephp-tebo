@@ -14,14 +14,6 @@ use TeBo\Telegram\Update;
 class Example implements CommandInterface
 {
     /**
-     * @inheritDoc
-     */
-    public function help(): string
-    {
-        return __('No help available');
-    }
-
-    /**
      * this command is called only if tebo.debug is set to true
      * 
      * @var bool
