@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Telegram;
 
-use Cake\Core\InstanceConfigTrait;
 use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\Telegram\Response\ResponseInterface;
@@ -11,31 +11,44 @@ use TeBo\Utility\Bot;
 
 class Chat
 {
-    use InstanceConfigTrait;
-
-    protected $_defaultConfig = [
-        'id' => null,
-    ];
-
-    
-    protected $lastResult = null;
+    protected int $id;
+    protected array $lastResult = null;
+    protected array $originalData;
 
     /**
-     * @param array $config
+     * @param array $chatData
      */
-    public function __construct($config = [])
+    public function __construct(array $chatData = [])
     {
-        $this->setConfig($config ?? []);
-
-        if (empty($this->getConfig('id'))) {
-            Log::error('Chat ID is required!', ['config' => $config]);
+        $this->originalData = $chatData;
+        $this->id = $chatData['id'] ?? null;
+        if (empty($this->id)) {
+            Log::error('Chat ID is required!', ['config' => $chatData]);
             throw new InvalidArgumentException('Chat ID is required!');
         }
     }
 
     public function getId(): ?int
     {
-        return $this->getConfig('id');
+        return $this->id;
+    }
+
+    /**
+     * Get the last result of the chat.
+     *
+     * @return array|null The last result of the chat.
+     */
+    public function getLastResult(): ?array
+    {
+        return $this->lastResult;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOriginalData(): array
+    {
+        return $this->originalData;
     }
 
     /**
@@ -51,18 +64,8 @@ class Chat
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
-        $this->lastResult = Bot::$method($response->telegramFormat($this->getConfig('id')), $response->httpOptions());
+        $this->lastResult = Bot::$method($response->telegramFormat($this->id), $response->httpOptions());
 
         return $this->lastResult['ok'] ?? false;
-    }
-
-    /**
-     * Get the last result of the chat.
-     *
-     * @return array|null The last result of the chat.
-     */
-    public function getLastResult(): ?array
-    {
-        return $this->lastResult;
     }
 }

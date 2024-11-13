@@ -6,14 +6,15 @@ namespace TeBo\Telegram\Response;
 
 use Cake\Core\InstanceConfigTrait;
 use TeBo\TeBoPlugin;
+use TeBo\Telegram\Enum\TelegramMethod;
 
 abstract class AbstractResponse implements ResponseInterface
 {
     use InstanceConfigTrait;
 
+    protected TelegramMethod|string $method;
+
     protected array $_defaultConfig = [
-        'telegramMethod' => null,
-        'options' => [],
         'httpOptions' => [],
     ];
 
@@ -29,13 +30,15 @@ abstract class AbstractResponse implements ResponseInterface
      */
     public function telegramMethod(): string
     {
-        $telegramMethod = $this->getConfig('telegramMethod');
-
-        if (empty($telegramMethod)) {
-            throw new \InvalidArgumentException('Telegram method is required!');
+        if ($this->method instanceof TelegramMethod) {
+            return $this->method->getMethod();
         }
 
-        return $telegramMethod;
+        if (is_string($this->method)) {
+            return $this->method;
+        }
+
+        throw new \InvalidArgumentException('Telegram method is required!');
     }
 
     /**

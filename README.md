@@ -89,27 +89,23 @@ return [
 The plugin provides a default command that can be extended to create custom commands. To create a new command, follow these steps:
 
 1. Create a new command class in the `src/Command` directory.
-2. Implement the `CommandInterface` interface.
+2. Extend from `TeBoCommand` or Implement the `CommandInterface` interface.
 3. Add the command to the `config/tebo.php` file.
 
 ```php
 <?php
 namespace App\TeBo\Command;
 
-use TeBo\TeBo\CommandInterface;
-use TeBo\Telegram\Response\TextMessage;
-use TeBo\Telegram\Update;
-
-class Prices implements CommandInterface
+class Prices extends \TeBo\TeBo\TeBoCommand
 {
     public function help(): ?string
     {
         return null;
     }
 
-    public function execute(Update $update): void
+    public function execute(\TeBo\Telegram\Update $update): void
     {
-        $update->getChat()->send(new TextMessage('The current prices are: $100'));
+        $update->getChat()->send(new \TeBo\Telegram\Response\TextMessage('The current prices are: $100'));
     }
 }
 ```
@@ -130,7 +126,7 @@ After adding the command, you can test it by sending `/prices` to the bot.
 To send a message with HTML formatting, use HtmlMessage:
 
 ```php
-$update->getChat()->send(new HtmlMessage([
+$update->reply(new \TeBo\Telegram\Response\HtmlMessage([
     '<b>HTML Message</b>',
     '',
     'This is an example of an HTML message.',
@@ -148,16 +144,16 @@ If the image is stored locally, use the path to the image file:
 
 ```php
 $file = fopen(TEBO_CORE_PATH . DS . '/resources/tebo.jpg', 'rb');
-$photo = new Photo($file, 'This is a placeholder image.');
-$update->getChat()->send($photo);
+$photo = new \TeBo\Telegram\Response\Photo($file, 'This is a placeholder image.');
+$update->reply($photo);
 ```
 
 - **Example 2**: Send a Photo from a URL with a Caption  
 You can also send a photo from a URL with a custom caption:
 
 ```php
-$photo = new Photo('https://placehold.it/300x200');
-$update->getChat()->send($photo);
+$photo = new \TeBo\Telegram\Response\Photo('https://placehold.it/300x200');
+$update->reply($photo);
 ```
 
 ### Sending with a chat ID

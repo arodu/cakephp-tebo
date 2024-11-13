@@ -14,6 +14,6 @@ class HtmlMessage extends TextMessage implements ResponseInterface
     public function initialize(): void
     {
         parent::initialize();
-        $this->setConfig('options', ['parse_mode' => 'HTML']);
+        $this->options = array_merge($this->options, ['parse_mode' => 'HTML']);
     }
 }

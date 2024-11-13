@@ -1,37 +1,36 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Telegram;
 
-use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
 use TeBo\TeBoPlugin;
+use TeBo\Telegram\Enum\UpdateType;
 use TeBo\Telegram\Response\ResponseInterface;
 use TeBo\Utility\Bot;
 
 class Update
 {
-    use InstanceConfigTrait;
-
-    protected $_defaultConfig = [
-        'update_id' => null,
-    ];
-
+    protected string $updateId;
+    protected array $originalData;
     protected Chat $chat;
-    protected array $_originalData;
+    protected Message $message;
+    protected UpdateType $type;
 
     /**
-     * @param array $config
+     * @param array $updateData
      */
-    public function __construct($updateData = [])
+    public function __construct(array $updateData = [])
     {
-        $this->_originalData = $updateData;
-        $this->setConfig($updateData);
-        if (empty($this->getConfig('update_id'))) {
+        $this->originalData = $updateData;
+        $this->type = UpdateType::get($updateData);
+        $this->updateId = $updateData['update_id'] ?? null;
+        if (empty($this->updateId)) {
             Log::error('Update ID is required!', ['config' => $updateData]);
             throw new InvalidArgumentException('Update ID is required!');
         }
@@ -48,7 +47,17 @@ class Update
      */
     public function getOriginalData()
     {
-        return $this->_originalData;
+        return $this->originalData;
+    }
+
+    /**
+     * @param string $path
+     * @param mixed $default
+     * @return void
+     */
+    public function get(string $path, mixed $default = null)
+    {
+        return Hash::get($this->getOriginalData(), $path, $default);
     }
 
     /**
@@ -59,10 +68,26 @@ class Update
     public function getChat(): Chat
     {
         if (empty($this->chat)) {
-            $this->chat = new Chat($this->getConfig('message.chat'));
+            $path = $this->type->getChatPath();
+            $chatData = Hash::get($this->getOriginalData(), $path);
+            $this->chat = new Chat($chatData);
         }
-        
+
         return $this->chat;
+    }
+
+    /**
+     * @return Message The message object.
+     */
+    public function getMessage(): Message
+    {
+        if (empty($this->message)) {
+            $path = $this->type->getMessagePath();
+            $messageData = Hash::get($this->getOriginalData(), $path);
+            $this->message = new Message($messageData);
+        }
+
+        return $this->message;
     }
 
     /**
@@ -83,13 +108,7 @@ class Update
      */
     public function isCommand(): bool
     {
-        $messageEntity = $this->getConfig('message.entities.0', null);
-        $isCommand = ($messageEntity['type'] ?? null) === 'bot_command' && ($messageEntity['offset'] ?? null) === 0;
-        if (!empty($messageEntity) && $isCommand) {
-            return true;
-        }
-
-        return false;
+        return $this->getMessage()->isCommand();
     }
 
     /**
@@ -99,36 +118,6 @@ class Update
      */
     public function getCommandName(): ?string
     {
-        if (!$this->isCommand()) {
-            return null;
-        }
-
-        $messageEntity = $this->getConfig('message.entities.0');
-        $text = $this->getConfig('message.text');
-        $commandName = substr($text, $messageEntity['offset'], $messageEntity['length']);
-
-        return trim($commandName, ' /');
-    }
-
-    /**
-     * @return MessageType
-     */
-    public function messageType(): MessageType
-    {
-        return MessageType::getFromMessage($this->getMessage());
-    }
-
-    /**
-     * @param string|null $path
-     * @return mixed
-     */
-    public function getMessage(?string $path = null): mixed
-    {
-        $message = $this->getOriginalData()['message'];
-        if (empty($path)) {
-            return $message;
-        }
-
-        return Hash::get($message ?? [], $path);
+        return $this->getMessage()->getCommandName();
     }
 }

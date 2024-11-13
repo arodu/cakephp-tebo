@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram;
+namespace TeBo\Telegram\Enum;
 
 use Cake\Utility\Hash;
 
@@ -31,6 +31,7 @@ enum MessageType: string
     const GROUP_LOCATION = 'location';
     const GROUP_POLL = 'poll';
     const GROUP_CONTACT = 'contact';
+    const GROUP_COMMAND = 'command';
 
     public static function getFromMessage(?array $message): self
     {
@@ -91,6 +92,7 @@ enum MessageType: string
                 self::DICE,
             ]),
             self::GROUP_CONTACT => $this === self::CONTACT,
+            self::GROUP_COMMAND => $this === self::COMMAND,
 
             default => false,
         };

@@ -14,17 +14,15 @@ use Cake\Utility\Text;
  */
 class Bot
 {
-    public const METHODS = [
-        'setWebhook',
-        'getWebhookInfo',
-        'getMe',
-        'deleteWebhook',
-        'sendMessage',
-        'sendPhoto',
-        'setMyCommands',
-        'getMyCommands',
-        'deleteMyCommands',
-    ];
+    const METHOD_SET_WEBHOOK = 'setWebhook';
+    const METHOD_GET_WEBHOOK_INFO = 'getWebhookInfo';
+    const METHOD_GET_ME = 'getMe';
+    const METHOD_DELETE_WEBHOOK = 'deleteWebhook';
+    const METHOD_SEND_MESSAGE = 'sendMessage';
+    const METHOD_SEND_PHOTO = 'sendPhoto';
+    const METHOD_SET_MY_COMMANDS = 'setMyCommands';
+    const METHOD_GET_MY_COMMANDS = 'getMyCommands';
+    const METHOD_DELETE_MY_COMMANDS = 'deleteMyCommands';
 
     /**
      * get url webhook to telegram api
@@ -61,9 +59,10 @@ class Bot
 
     public static function __callStatic($name, $arguments)
     {
-        if (in_array($name, static::METHODS)) {
+        if (isset(self::$name)) {
             $method = static::buildMethod($name, $arguments[0] ?? [], $arguments[1] ?? []);
             $http = new Client();
+
             $response = $http->post(
                 $method['url'],
                 $method['data'],

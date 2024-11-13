@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace TeBo\Telegram\Response;
 
 use TeBo\TeBoPlugin;
+use TeBo\Telegram\Enum\TelegramMethod;
 
 class Photo extends AbstractResponse implements ResponseInterface
 {
     use TextTrait;
 
     protected $photo;
+    protected TelegramMethod|string $method = TelegramMethod::SEND_PHOTO;
+    protected array $options = [];
 
-    public function __construct($photo = null, string|array|null $caption = null, array $config = [])
+    public function __construct($photo = null, string|array|null $caption = null, array $options = [])
     {
-        $this->setConfig($config);
-        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_PHOTO);
+        $this->options = $options;
         if ($photo) {
             $this->addPhoto($photo);
         }
@@ -42,7 +44,7 @@ class Photo extends AbstractResponse implements ResponseInterface
     public function telegramFormat(int|string|null $chat_id = null): array
     {
         return array_merge(
-            $this->getConfig('options', []),
+            $this->options,
             [
                 'chat_id' => $chat_id,
                 'photo' => $this->photo,

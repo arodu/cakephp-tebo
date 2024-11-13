@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use TeBo\TeBoPlugin;
+use TeBo\Telegram\Enum\TelegramMethod;
 
 class TextMessage extends AbstractResponse
 {
     use TextTrait;
 
-    protected array $text = [];
+    protected TelegramMethod|string $method = TelegramMethod::SEND_MESSAGE;
 
-    public function __construct(string|array|null $text = null, array $config = [])
+    protected array $text = [];
+    protected array $options = [];
+
+    public function __construct(string|array|null $text = null, array $options = [])
     {
-        $this->setConfig($config);
-        $this->setConfig('telegramMethod', TeBoPlugin::METHOD_SEND_MESSAGE);
+        $this->options = $options;
         $this->addText($text);
         $this->initialize();
     }
@@ -37,7 +39,8 @@ class TextMessage extends AbstractResponse
     public function telegramFormat(int|string $chat_id = null): array
     {
         return array_merge(
-            $this->getConfig('options', []),
+            $this->method->getDefaultOptions(),
+            $this->options,
             [
                 'chat_id' => $chat_id,
                 'text' => $this->getText(),
