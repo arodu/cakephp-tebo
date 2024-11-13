@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use Cake\Core\InstanceConfigTrait;
 use TeBo\Telegram\Enum\TelegramMethod;
 
 class CustomResponse implements ResponseInterface
 {
     protected TelegramMethod|string $telegramMethod;
     protected array $httpOptions;
-    protected $telegramFormat;
+    protected array|callable $telegramFormat;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options = [])
     {
         $this->setTelegramFormat($options['telegramFormat'] ?? fn() => []);
@@ -21,10 +23,10 @@ class CustomResponse implements ResponseInterface
     }
 
     /**
-     * @param callable $callback
+     * @param array|callable $callback
      * @return self
      */
-    public function setTelegramFormat(callable $callback): self
+    public function setTelegramFormat(array|callable $callback): self
     {
         $this->telegramFormat = $callback;
 
@@ -61,7 +63,15 @@ class CustomResponse implements ResponseInterface
      */
     public function telegramFormat(int|string $chat_id = null): array
     {
-        return call_user_func($this->telegramFormat, $chat_id);
+        if (is_array($this->telegramFormat)) {
+            return $this->telegramFormat;
+        }
+
+        if (is_callable($this->telegramFormat)) {
+            return call_user_func($this->telegramFormat, $chat_id);
+        }
+
+        throw new \InvalidArgumentException('Invalid telegram format');
     }
 
     /**

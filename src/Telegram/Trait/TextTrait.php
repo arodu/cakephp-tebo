@@ -2,16 +2,23 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Telegram\Trait;
 
 trait TextTrait
 {
     /**
+     * The text of the message.
+     *
+     * @var array
+     */
+    protected array $text = [];
+
+    /**
      * Resets the text property of the Message object.
      *
-     * @return self
+     * @return static
      */
-    public function resetText(): self
+    public function resetText(): static
     {
         $this->text = [];
 
@@ -22,7 +29,7 @@ trait TextTrait
      * Adds text to the message.
      *
      * @param string|array|null $text The text to add. It can be a string or an array of strings.
-     * @return self The updated Message object.
+     * @return static
      */
     public function addText(string|array $text = null): static
     {
@@ -44,6 +51,6 @@ trait TextTrait
      */
     public function getText(): string
     {
-        return implode("\n", $this->text);
+        return implode(PHP_EOL, $this->text);
     }
 }

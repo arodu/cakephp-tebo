@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TeBo\Telegram\Response;
 
 use TeBo\Telegram\Enum\TelegramMethod;
+use TeBo\Telegram\Trait\TextTrait;
 
 class TextMessage extends AbstractResponse
 {
@@ -12,7 +13,6 @@ class TextMessage extends AbstractResponse
 
     protected TelegramMethod|string $method = TelegramMethod::SEND_MESSAGE;
 
-    protected array $text = [];
     protected array $options = [];
 
     public function __construct(string|array|null $text = null, array $options = [])

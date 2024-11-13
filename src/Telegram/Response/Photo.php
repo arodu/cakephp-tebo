@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use TeBo\TeBoPlugin;
 use TeBo\Telegram\Enum\TelegramMethod;
+use TeBo\Telegram\Trait\TextTrait;
 
 class Photo extends AbstractResponse implements ResponseInterface
 {

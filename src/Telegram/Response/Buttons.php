@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram\Response;
 
-use TeBo\TeBoPlugin;
+use TeBo\Telegram\Trait\RegisterListTrait;
 
 class Buttons extends TextMessage implements ResponseInterface
 {
-    protected array $reply_markup = [];
+    use RegisterListTrait;
 
     /**
      * @param string|array|null $text The text of the message.
@@ -42,12 +42,10 @@ class Buttons extends TextMessage implements ResponseInterface
      */
     public function addButton(string $text, string $callback_data): self
     {
-        $this->reply_markup['inline_keyboard'][] = [
-            [
-                'text' => $text,
-                'callback_data' => $callback_data,
-            ],
-        ];
+        $this->registerItem([
+            'text' => $text,
+            'callback_data' => $callback_data,
+        ]);
 
         return $this;
     }
@@ -77,7 +75,11 @@ class Buttons extends TextMessage implements ResponseInterface
             [
                 'chat_id' => $chat_id,
                 'text' => $this->getText(),
-                'reply_markup' => json_encode($this->reply_markup),
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        $this->registerList(),
+                    ],
+                ]),
             ]
         );
     }
