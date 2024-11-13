@@ -24,7 +24,7 @@ trait TextTrait
      * @param string|array|null $text The text to add. It can be a string or an array of strings.
      * @return self The updated Message object.
      */
-    public function addText(string|array $text = null): self
+    public function addText(string|array $text = null): static
     {
         if (is_string($text)) {
             $this->text[] = $text;

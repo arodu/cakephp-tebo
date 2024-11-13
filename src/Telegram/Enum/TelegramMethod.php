@@ -49,6 +49,7 @@ enum TelegramMethod: string
     case DELETE_CHAT_STICKER_SET = 'deleteChatStickerSet';
     case ANSWER_CALLBACK_QUERY = 'answerCallbackQuery';
     case SET_MY_COMMANDS = 'setMyCommands';
+    case EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup';
 
     public function getMethod(): string
     {

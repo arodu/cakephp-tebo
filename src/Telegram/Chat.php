@@ -7,20 +7,22 @@ namespace TeBo\Telegram;
 use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\Telegram\Response\ResponseInterface;
+use TeBo\Telegram\Trait\DataManageTrait;
 use TeBo\Utility\Bot;
 
 class Chat
 {
+    use DataManageTrait;
+
     protected int $id;
-    protected array $lastResult = null;
-    protected array $originalData;
+    protected ?array $lastResult = null;
 
     /**
      * @param array $chatData
      */
     public function __construct(array $chatData = [])
     {
-        $this->originalData = $chatData;
+        $this->setOriginalData($chatData);
         $this->id = $chatData['id'] ?? null;
         if (empty($this->id)) {
             Log::error('Chat ID is required!', ['config' => $chatData]);
@@ -44,11 +46,11 @@ class Chat
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getOriginalData(): array
+    public function getType(): string
     {
-        return $this->originalData;
+        return $this->get('type') ?? '';
     }
 
     /**
@@ -58,13 +60,14 @@ class Chat
     public function send(ResponseInterface $response): bool
     {
         $method = $response->telegramMethod();
-
         if (empty($method)) {
             Log::error('Telegram method is required!', ['response' => $response]);
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
         $this->lastResult = Bot::$method($response->telegramFormat($this->id), $response->httpOptions());
+
+        Bot::debug('Chat response: ', $this->lastResult);
 
         return $this->lastResult['ok'] ?? false;
     }

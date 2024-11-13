@@ -12,12 +12,14 @@ use InvalidArgumentException;
 use TeBo\TeBoPlugin;
 use TeBo\Telegram\Enum\UpdateType;
 use TeBo\Telegram\Response\ResponseInterface;
+use TeBo\Telegram\Trait\DataManageTrait;
 use TeBo\Utility\Bot;
 
 class Update
 {
-    protected string $updateId;
-    protected array $originalData;
+    use DataManageTrait;
+
+    protected string|int $updateId;
     protected Chat $chat;
     protected Message $message;
     protected UpdateType $type;
@@ -27,37 +29,17 @@ class Update
      */
     public function __construct(array $updateData = [])
     {
-        $this->originalData = $updateData;
-        $this->type = UpdateType::get($updateData);
-        $this->updateId = $updateData['update_id'] ?? null;
+        $this->setOriginalData($updateData);
+        $this->updateId = ((int) $updateData['update_id']) ?? null;
         if (empty($this->updateId)) {
             Log::error('Update ID is required!', ['config' => $updateData]);
             throw new InvalidArgumentException('Update ID is required!');
         }
 
         Bot::debug('New update received', $updateData);
+
         $event = new Event(TeBoPlugin::EVENT_NEW_UPDATE, $this);
         EventManager::instance()->dispatch($event);
-    }
-
-    /**
-     * Get the original data of the update.
-     *
-     * @return mixed The original data of the update.
-     */
-    public function getOriginalData()
-    {
-        return $this->originalData;
-    }
-
-    /**
-     * @param string $path
-     * @param mixed $default
-     * @return void
-     */
-    public function get(string $path, mixed $default = null)
-    {
-        return Hash::get($this->getOriginalData(), $path, $default);
     }
 
     /**
@@ -68,7 +50,7 @@ class Update
     public function getChat(): Chat
     {
         if (empty($this->chat)) {
-            $path = $this->type->getChatPath();
+            $path = $this->getType()->getChatPath();
             $chatData = Hash::get($this->getOriginalData(), $path);
             $this->chat = new Chat($chatData);
         }
@@ -82,12 +64,21 @@ class Update
     public function getMessage(): Message
     {
         if (empty($this->message)) {
-            $path = $this->type->getMessagePath();
+            $path = $this->getType()->getMessagePath();
             $messageData = Hash::get($this->getOriginalData(), $path);
             $this->message = new Message($messageData);
         }
 
         return $this->message;
+    }
+
+    public function getType(): UpdateType
+    {
+        if (empty($this->type)) {
+            $this->type = UpdateType::get($this->getOriginalData());
+        }
+
+        return $this->type;
     }
 
     /**

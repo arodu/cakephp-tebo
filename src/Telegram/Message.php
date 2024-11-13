@@ -6,21 +6,24 @@ namespace TeBo\Telegram;
 
 use Cake\Utility\Hash;
 use TeBo\Telegram\Enum\MessageType;
+use TeBo\Telegram\Trait\DataManageTrait;
 
 class Message
 {
-    protected string $id;
+    use DataManageTrait;
+
+    protected int $id;
     protected MessageType $type;
-    protected array $originalData;
+    
 
     public function __construct(array $messageData)
     {
-        $this->originalData = $messageData;
-        $this->id = $messageData['message_id'];
+        $this->setOriginalData($messageData);
+        $this->id = (int) $messageData['message_id'];
         $this->type = MessageType::getFromMessage($messageData);
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
@@ -28,11 +31,6 @@ class Message
     public function getType(): MessageType
     {
         return $this->type;
-    }
-
-    public function getOriginalData(): array
-    {
-        return $this->originalData;
     }
 
     public function isCommand(): bool
@@ -46,10 +44,10 @@ class Message
             return null;
         }
 
-        $entities = Hash::get($this->originalData, 'entities');
+        $entities = Hash::get($this->getOriginalData(), 'entities');
         $commandEntity = array_filter($entities, fn($entity) => $entity['type'] === 'bot_command');
         $commandEntity = reset($commandEntity);
 
-        return substr($this->originalData['text'], $commandEntity['offset'] + 1, $commandEntity['length'] - 1);
+        return substr($this->get('text'), $commandEntity['offset'] + 1, $commandEntity['length'] - 1);
     }
 }
