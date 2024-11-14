@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
-
-use TeBo\TeBoPlugin;
+namespace TeBo\Response;
 
 class HtmlMessage extends TextMessage implements ResponseInterface
 {

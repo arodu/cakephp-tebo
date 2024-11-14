@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Enum;
+namespace TeBo\Enum;
+
+use Cake\Utility\Hash;
 
 enum UpdateType: string
 {
+    case COMMAND = 'command';
     case MESSAGE = 'message';
     case EDITED_MESSAGE = 'edited_message';
     case CHANNEL_POST = 'channel_post';
@@ -16,40 +19,36 @@ enum UpdateType: string
     case PRE_CHECKOUT_QUERY = 'pre_checkout_query';
     case POLL = 'poll';
     case POLL_ANSWER = 'poll_answer';
+    case REPLY = 'reply';
 
-    public static function get(array $data): self
+    public static function get(array $update): self
     {
-        if (isset($data['message'])) {
-            return self::MESSAGE;
-        } elseif (isset($data['edited_message'])) {
-            return self::EDITED_MESSAGE;
-        } elseif (isset($data['channel_post'])) {
-            return self::CHANNEL_POST;
-        } elseif (isset($data['edited_channel_post'])) {
-            return self::EDITED_CHANNEL_POST;
-        } elseif (isset($data['inline_query'])) {
-            return self::INLINE_QUERY;
-        } elseif (isset($data['chosen_inline_result'])) {
-            return self::CHOSEN_INLINE_RESULT;
-        } elseif (isset($data['callback_query'])) {
-            return self::CALLBACK_QUERY;
-        } elseif (isset($data['shipping_query'])) {
-            return self::SHIPPING_QUERY;
-        } elseif (isset($data['pre_checkout_query'])) {
-            return self::PRE_CHECKOUT_QUERY;
-        } elseif (isset($data['poll'])) {
-            return self::POLL;
-        } elseif (isset($data['poll_answer'])) {
-            return self::POLL_ANSWER;
-        }
+        $type = Hash::get($data['message'] ?? [], 'entities.0.type');
 
-        throw new \InvalidArgumentException('Invalid update data');
+        return match (true) {
+            $type === 'bot_command' => self::COMMAND,
+            isset($update['message']) => self::MESSAGE,
+            isset($update['edited_message']) => self::EDITED_MESSAGE,
+            isset($update['channel_post']) => self::CHANNEL_POST,
+            isset($update['edited_channel_post']) => self::EDITED_CHANNEL_POST,
+            isset($update['inline_query']) => self::INLINE_QUERY,
+            isset($update['chosen_inline_result']) => self::CHOSEN_INLINE_RESULT,
+            isset($update['callback_query']) => self::CALLBACK_QUERY,
+            isset($update['shipping_query']) => self::SHIPPING_QUERY,
+            isset($update['pre_checkout_query']) => self::PRE_CHECKOUT_QUERY,
+            isset($update['poll']) => self::POLL,
+            isset($update['poll_answer']) => self::POLL_ANSWER,
+            isset($update['reply_to_message']) => self::REPLY,
+            default => throw new \InvalidArgumentException('Invalid update data'),
+        };
     }
 
     public function getChatPath(): string
     {
         return match ($this) {
-            self::MESSAGE => 'message.chat',
+            self::REPLY,
+            self::MESSAGE,
+            self::COMMAND => 'message.chat',
             self::EDITED_MESSAGE => 'edited_message.chat',
             self::CHANNEL_POST => 'channel_post.chat',
             self::EDITED_CHANNEL_POST => 'edited_channel_post.chat',
@@ -67,7 +66,9 @@ enum UpdateType: string
     public function getMessagePath(): string
     {
         return match ($this) {
-            self::MESSAGE => 'message',
+            self::REPLY,
+            self::MESSAGE,
+            self::COMMAND => 'message',
             self::EDITED_MESSAGE => 'edited_message',
             self::CHANNEL_POST => 'channel_post',
             self::EDITED_CHANNEL_POST => 'edited_channel_post',

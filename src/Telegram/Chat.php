@@ -7,8 +7,8 @@ namespace TeBo\Telegram;
 use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\Telegram\Response\ResponseInterface;
-use TeBo\Telegram\Trait\DataManageTrait;
 use TeBo\Utility\Bot;
+use TeBo\Utility\Trait\DataManageTrait;
 
 class Chat
 {

@@ -1,16 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
-namespace TeBo\TeBo;
+namespace TeBo\Action;
 
-use TeBo\Telegram\Chat;
 use TeBo\Telegram\Update;
 
-interface CommandInterface
+interface ActionInterface
 {
-    const DESCRIPTION = null;
-
     /**
+     * Execute the action with the given update.
+     * 
      * @param Update $update
      * @return void
      */

@@ -10,10 +10,10 @@ use Cake\Log\Log;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
 use TeBo\TeBoPlugin;
-use TeBo\Telegram\Enum\UpdateType;
-use TeBo\Telegram\Response\ResponseInterface;
-use TeBo\Telegram\Trait\DataManageTrait;
+use TeBo\Enum\UpdateType;
+use TeBo\Response\ResponseInterface;
 use TeBo\Utility\Bot;
+use TeBo\Utility\Trait\DataManageTrait;
 
 class Update
 {

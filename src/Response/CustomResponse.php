@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Response;
 
-use TeBo\Telegram\Enum\TelegramMethod;
+use TeBo\Enum\TelegramMethod;
 
 class CustomResponse implements ResponseInterface
 {

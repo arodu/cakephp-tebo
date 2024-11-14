@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Response;
 
-use TeBo\Telegram\Trait\RegisterListTrait;
+use TeBo\Utility\Trait\RegisterListTrait;
 
 class Buttons extends TextMessage implements ResponseInterface
 {

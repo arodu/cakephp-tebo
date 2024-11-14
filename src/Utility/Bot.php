@@ -9,7 +9,7 @@ use Cake\Http\Client;
 use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Utility\Text;
-use TeBo\Telegram\Enum\TelegramMethod;
+use TeBo\Enum\TelegramMethod;
 
 /**
  * Tebo command.

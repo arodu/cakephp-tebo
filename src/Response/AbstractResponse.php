@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Response;
 
 use Cake\Core\InstanceConfigTrait;
-use TeBo\TeBoPlugin;
-use TeBo\Telegram\Enum\TelegramMethod;
+use TeBo\Enum\TelegramMethod;
 
 abstract class AbstractResponse implements ResponseInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Response;
 
 interface ResponseInterface
 {

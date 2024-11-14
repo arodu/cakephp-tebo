@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\TeBo;
+namespace TeBo\Action;
 
-abstract class TeBoCommand implements CommandInterface
+abstract class Action implements ActionInterface
 {
     public function __construct()
     {

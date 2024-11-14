@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Response;
+namespace TeBo\Response;
 
-use TeBo\Telegram\Enum\TelegramMethod;
-use TeBo\Telegram\Trait\TextTrait;
+use TeBo\Enum\TelegramMethod;
+use TeBo\Utility\Trait\TextTrait;
 
 class TextMessage extends AbstractResponse
 {

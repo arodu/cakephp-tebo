@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Trait;
+namespace TeBo\Utility\Trait;
 
 trait TextTrait
 {

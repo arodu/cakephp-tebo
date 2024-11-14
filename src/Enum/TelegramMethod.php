@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TeBo\Telegram\Enum;
+namespace TeBo\Enum;
 
 enum TelegramMethod: string
 {
