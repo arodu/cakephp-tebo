@@ -25,13 +25,13 @@ enum MessageType: string
     case LINK = 'link';
     case COMMAND = 'command';
 
-    const GROUP_TEXT = 'text';
-    const GROUP_MEDIA = 'media';
-    const GROUP_FILE = 'file';
-    const GROUP_LOCATION = 'location';
-    const GROUP_POLL = 'poll';
-    const GROUP_CONTACT = 'contact';
-    const GROUP_COMMAND = 'command';
+    public const GROUP_TEXT = 'text';
+    public const GROUP_MEDIA = 'media';
+    public const GROUP_FILE = 'file';
+    public const GROUP_LOCATION = 'location';
+    public const GROUP_POLL = 'poll';
+    public const GROUP_CONTACT = 'contact';
+    public const GROUP_COMMAND = 'command';
 
     public static function getFromMessage(?array $message): self
     {

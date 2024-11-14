@@ -20,7 +20,7 @@ class ActionFactory
         $updateType = $update->getType();
         $actionsMap = $actionsMap ?? Configure::read('tebo.actions');
         $action = $actionsMap[$updateType->value] ?? $actionsMap['default'] ?? null;
-        
+
         if(empty($action)) {
             return null;
         }
@@ -30,10 +30,10 @@ class ActionFactory
         }
 
         if (is_array($action) && $updateType === UpdateType::COMMAND) {
-            $action = $action[$update->getCommandName()];
+            $action = $action[$update->getCommandName()] ?? $action['default'] ?? null;
         }
 
-        if (is_string($action) && class_exists($action)) {
+        if (is_string($action) && class_exists($action) && is_subclass_of($action, ActionInterface::class)) {
             $action = new $action();
         }
 
@@ -41,7 +41,24 @@ class ActionFactory
             return $action;
         }
 
-        // @todo create custom exception
-        throw new \RuntimeException('Invalid action');
+        return null;
+    }
+
+    /**
+     * @param Update $update
+     * @param array|null $actionsMap
+     * @return ActionInterface
+     * @throws \RuntimeException
+     */
+    public static function createOrFail(Update $update, ?array $actionsMap = null): ActionInterface
+    {
+        $action = self::create($update, $actionsMap);
+
+        if (empty($action)) {
+            // @todo create custom exception
+            throw new \RuntimeException('Action not found');
+        }
+
+        return $action;
     }
 }

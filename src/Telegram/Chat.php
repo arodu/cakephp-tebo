@@ -6,9 +6,10 @@ namespace TeBo\Telegram;
 
 use Cake\Log\Log;
 use InvalidArgumentException;
-use TeBo\Telegram\Response\ResponseInterface;
+use TeBo\Response\ResponseInterface;
 use TeBo\Utility\Bot;
 use TeBo\Utility\Trait\DataManageTrait;
+use TeBo\Telegram\Api as TelegramApi;
 
 class Chat
 {
@@ -65,8 +66,7 @@ class Chat
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
-        $this->lastResult = Bot::$method($response->telegramFormat($this->id), $response->httpOptions());
-
+        $this->lastResult = TelegramApi::call($method, $response->telegramFormat($this->id), $response->httpOptions());
         Bot::debug('Chat response: ', $this->lastResult);
 
         return $this->lastResult['ok'] ?? false;

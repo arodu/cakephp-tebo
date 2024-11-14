@@ -73,10 +73,9 @@ class Api
     /**
      * @return array
      */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): array
     {
-        $method = static::getTelegramMethod($name);
-        return static::call($method, $arguments[0] ?? [], $arguments[1] ?? []);
+        return static::call($name, $arguments[0] ?? [], $arguments[1] ?? []);
     }
 
     /**

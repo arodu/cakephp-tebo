@@ -8,7 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Core\Configure;
+use TeBo\Telegram\Api as TelegramApi;
 use TeBo\Utility\Bot;
 
 /**
@@ -73,16 +73,16 @@ class TeboCommandListCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         if ($args->getOption('get')) {
-            $data = Bot::getMyCommands();
+            $data = TelegramApi::getMyCommands();
             $this->printCommands($data['result'], $io);
         } elseif ($args->getOption('set')) {
-            $data = Bot::setMyCommands(['commands' => json_encode($this->createCommandList())]);
+            $data = TelegramApi::setMyCommands(['commands' => json_encode(Bot::getCommandDescriptionList())]);
             $this->formatPrint($data, $io);
         } elseif ($args->getOption('build')) {
-            $result = $this->createCommandList();
+            $result = Bot::getCommandDescriptionList();
             $this->printCommands($result, $io);
         } elseif ($args->getOption('delete')) {
-            $this->formatPrint(Bot::deleteMyCommands(), $io);
+            $this->formatPrint(TelegramApi::deleteMyCommands(), $io);
         } else {
             $io->out($this->getOptionParser()->help());
         }
@@ -95,21 +95,5 @@ class TeboCommandListCommand extends Command
         foreach ($commands as $command) {
             $io->out("\t" . $command['command'] . ': ' . $command['description']);
         }
-    }
-
-    protected function createCommandList(): array
-    {
-        $mapper = Configure::read('tebo.command.mapper');
-        $commands = [];
-        foreach ($mapper ?? [] as $command => $class) {
-            if (!empty($class::DESCRIPTION)) {
-                $commands[] = [
-                    'command' => $command,
-                    'description' => $class::DESCRIPTION,
-                ];
-            }
-        }
-
-        return $commands;
     }
 }

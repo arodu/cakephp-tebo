@@ -10,6 +10,7 @@ use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Utility\Text;
 use TeBo\Enum\TelegramMethod;
+use TeBo\Enum\UpdateType;
 
 /**
  * Tebo command.
@@ -29,31 +30,6 @@ class Bot
     }
 
     /**
-     * set webhook to telegram api
-     *
-     * @return array
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        $telegramMethod = TelegramMethod::tryFrom($name);
-        if (empty($telegramMethod)) {
-            throw new \BadMethodCallException('Method not found');
-        }
-
-        $http = new Client();
-        $telegram = Configure::read('tebo.telegram');
-        $url = Text::insert($telegram['api'], [
-            'token' => $telegram['token'],
-            'method' => $telegramMethod->getMethod(),
-        ]);
-        $data = $arguments[0] ?? [];
-        $httpOptions = $arguments[1] ?? [];
-        $response = $http->post($url, $data, $httpOptions);
-
-        return $response->getJson();
-    }
-
-    /**
      * @param string $message
      * @param array $data
      * @return void
@@ -63,5 +39,33 @@ class Bot
         if (Configure::read('debug')) {
             Log::debug($message . ': ' . json_encode($data), 'tebo');
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCommandDescriptionList(): array
+    {
+        $commandList = [];
+        $classes = Configure::read('tebo.actions.' . UpdateType::COMMAND->value);
+
+        if (empty($classes)) {
+            return [];
+        }
+
+        if (is_callable($classes)) {
+            $classes = $classes();
+        }
+
+        foreach ($classes ?? [] as $command => $class) {
+            if (!empty($class::DESCRIPTION)) {
+                $commandList[] = [
+                    'command' => $command,
+                    'description' => $class::DESCRIPTION,
+                ];
+            }
+        }
+
+        return $commandList ?? [];
     }
 }

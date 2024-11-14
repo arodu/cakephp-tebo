@@ -7,7 +7,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use TeBo\Utility\Bot;
+use TeBo\Telegram\Api as TelegramApi;
 
 /**
  * TeboWebhook command.
@@ -77,18 +77,18 @@ class TeboWebhookCommand extends Command
         if ($args->getOption('set')) {
             $url = $args->getOption('url');
             if (empty($url)) {
-                $url = Bot::getWebhookUrl();
+                $url = TelegramApi::getWebhookUrl();
             }
-            $this->formatPrint(Bot::setWebhook(['url' => $url]), $io);
+            $this->formatPrint(TelegramApi::setWebhook(['url' => $url]), $io);
         
         } elseif ($args->getOption('delete')) {
-            $this->formatPrint(Bot::deleteWebhook(), $io);
+            $this->formatPrint(TelegramApi::deleteWebhook(), $io);
         
         } elseif ($args->getOption('info')) {
-            $this->formatPrint(Bot::getWebhookInfo(), $io);
+            $this->formatPrint(TelegramApi::getWebhookInfo(), $io);
 
         } elseif ($args->getOption('bot-info')) {
-            $this->formatPrint(Bot::getMe(), $io);
+            $this->formatPrint(TelegramApi::getMe(), $io);
         
         } else {
             $io->out($this->getOptionParser()->help());

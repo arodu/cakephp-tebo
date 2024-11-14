@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Command;
@@ -7,7 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use TeBo\Utility\Bot;
+use TeBo\Telegram\Api as TelegramApi;
 
 /**
  * Tebo command.
@@ -37,22 +38,28 @@ class TeboCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $options = [
+            '1' => 'Get Webhook URL',
+            '2' => 'Set Webhook to telegram',
+            '3' => 'Delete Webhook from telegram',
+            '4' => 'Get Webhook info from telegram',
+            '5' => 'Get bot info',
+            'h' => 'Help',
+            'q' => 'Quit',
+        ];
+
         $io->out('<info>TeBo Commands</info>');
         $io->hr();
-        $io->out('[1] Get Webhook URL');
-        $io->out('[2] Set Webhook to telegram');
-        $io->out('[3] Delete Webhook from telegram');
-        $io->out('[4] Get Webhook info from telegram');
-        $io->out('[5] Get bot info');
-        $io->out('[H] Help');
-        $io->out('[Q] Quit');
+        foreach ($options as $key => $option) {
+            $io->out("[$key] $option");
+        }
 
         do {
-            $choice = strtolower($io->askChoice('What would you like to do?', ['1', '2', '3', '4', '5', 'H', 'Q']));
+            $choice = strtolower($io->askChoice('What would you like to do?', array_keys($options), 'h'));
             $code = null;
             switch ($choice) {
                 case '1':
-                    $io->success(Bot::getWebhookUrl());
+                    $io->success(TelegramApi::getWebhookUrl());
                     break;
 
                 case '2':
@@ -72,21 +79,25 @@ class TeboCommand extends Command
                     break;
 
                 case 'h':
+                case 'H':
                     $io->out($this->getOptionParser()->help());
                     break;
                 case 'q':
+                case 'Q':
                     // Do nothing
                     break;
                 default:
                     $io->err(
                         'You have made an invalid selection. '
-                        //. 'Please choose a command to execute by entering E, I, H, or Q.'
+                            . 'Please choose a command from the list.'
+                            . PHP_EOL
+                            . 'Type "h" for help or "q" to quit.'
                     );
             }
             if ($code === static::CODE_ERROR) {
                 $this->abort();
             }
-        } while ($choice !== 'q');
+        } while ($choice !== 'q' && $choice !== 'Q');
 
         return static::CODE_SUCCESS;
     }

@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Log\Log;
 use Exception;
 use PSpell\Config;
+use TeBo\Action\ActionFactory;
 use TeBo\Controller\AppController;
 use TeBo\TeBo\CommandFactory as TeBoCommandFactory;
 use TeBo\Telegram\Update;
@@ -27,20 +28,14 @@ class BotController extends AppController
     public function webhook()
     {
         try {
-            $data = $this->getRequest()->getData();
-            $update = new Update($data);
-            $command = TeBoCommandFactory::build($update) ?? TeBoCommandFactory::getDefaultCommand() ?? null;
+            $update = new Update($this->getRequest()->getData());
 
-            if (!$command) {
-                Log::notice('Command not found!', ['update' => $update->getOriginalData()]);
-                return $this->response->withStatus(200);
-            }
-
-            $command->execute($update);
+            $action = ActionFactory::createOrFail($update);
+            $action->execute($update);
 
             return $this->response->withStatus(200);
         } catch (Exception $e) {
-            Log::error($e->getMessage() . ': ' . json_encode($update->getOriginalData()));
+            Log::error($e->getMessage() . ': with update: ' . json_encode($update->getOriginalData()));
 
             return $this->response->withStatus(200);
         }

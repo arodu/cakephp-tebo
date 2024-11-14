@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Enum;
@@ -23,7 +24,7 @@ enum UpdateType: string
 
     public static function get(array $update): self
     {
-        $type = Hash::get($data['message'] ?? [], 'entities.0.type');
+        $type = Hash::get($update ?? [], 'message.entities.0.type');
 
         return match (true) {
             $type === 'bot_command' => self::COMMAND,
