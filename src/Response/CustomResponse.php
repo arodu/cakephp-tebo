@@ -10,7 +10,7 @@ class CustomResponse implements ResponseInterface
 {
     protected TelegramMethod|string $telegramMethod;
     protected array $httpOptions;
-    protected array|callable $telegramFormat;
+    protected mixed $telegramFormat;
 
     /**
      * @param array $options
