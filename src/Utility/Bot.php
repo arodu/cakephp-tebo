@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace TeBo\Utility;
 
 use Cake\Core\Configure;
-use Cake\Http\Client;
 use Cake\Log\Log;
 use Cake\Routing\Router;
-use Cake\Utility\Text;
-use TeBo\Enum\TelegramMethod;
+use TeBo\Action\ActionInterface;
 use TeBo\Enum\UpdateType;
 
 /**
@@ -58,11 +56,14 @@ class Bot
         }
 
         foreach ($classes ?? [] as $command => $class) {
-            if (!empty($class::DESCRIPTION)) {
-                $commandList[] = [
-                    'command' => $command,
-                    'description' => $class::DESCRIPTION,
-                ];
+            if (class_exists($class) && is_subclass_of($class, ActionInterface::class)) {
+                $description = (new $class())->description();
+                if ($description) {
+                    $commandList[] = [
+                        'command' => $command,
+                        'description' => $description,
+                    ];
+                }
             }
         }
 

@@ -15,4 +15,11 @@ interface ActionInterface
      * @return void
      */
     public function execute(Update $update): void;
+
+    /**
+     * The command description for the help command.
+     *
+     * @return string|null
+     */
+    public function description(): ?string;
 }

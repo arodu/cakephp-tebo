@@ -1,0 +1,47 @@
+{{ element('Bake.file_header', {
+    namespace: "#{namespace}\\TeBo\\Action",
+    classImports: [
+        'TeBo\\Action\\Action',
+        'TeBo\\Response\\HtmlMessage',
+        'TeBo\\Telegram\\Update',
+    ],
+}) }}
+
+/**
+ * {{ name }} TeBo action
+ * This action is used to handle the {{ name|underscore }} command.
+ * 
+ * @method string description(): ?string
+ * @method void execute(Update $update): void
+ */
+class {{ name }}Action extends Action
+{
+    /**
+     * Initialize the action.
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+    }
+
+    /**
+     * The command description for the help command.
+     *
+     * @return string|null
+     */
+    public function description(): ?string
+    {
+        return __('{{ name|underscore|humanize }} command');
+    }
+
+    /**
+     * Execute the action with the given update.
+     * 
+     * @param Update $update
+     * @return void
+     */
+    public function execute(Update $update): void
+    {
+        $update->reply(new HtmlMessage(__('Hello, I am <code>/{{ name|underscore }}</code> command')));
+    }
+}

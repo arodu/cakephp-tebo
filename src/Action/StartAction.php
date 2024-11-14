@@ -4,15 +4,20 @@ declare(strict_types=1);
 namespace TeBo\Action;
 
 use Cake\Core\Configure;
-use TeBo\Action\CommandInterface;
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;
 use TeBo\Response\TextMessage;
 use TeBo\Telegram\Update;
 
-class StartAction extends Action implements CommandInterface
+class StartAction extends Action
 {
-    const DESCRIPTION = 'Start command';
+    /**
+     * @inheritDoc
+     */
+    public function description(): ?string
+    {
+        return __('Start command');
+    }
 
     /**
      * @inheritDoc

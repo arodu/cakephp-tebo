@@ -9,9 +9,15 @@ use TeBo\Response\HtmlMessage;
 use TeBo\Telegram\Update;
 use TeBo\Utility\Bot;
 
-class HelpAction extends Action implements CommandInterface
+class HelpAction extends Action
 {
-    const DESCRIPTION = 'Show help message';
+    /**
+     * @inheritDoc
+     */
+    public function description(): ?string
+    {
+        return __('Show help message');
+    }
 
     /**
      * @inheritDoc
