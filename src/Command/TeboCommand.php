@@ -8,7 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use TeBo\Telegram\Api as TelegramApi;
+use TeBo\Utility\Bot;
 
 /**
  * Tebo command.
@@ -59,7 +59,7 @@ class TeboCommand extends Command
             $code = null;
             switch ($choice) {
                 case '1':
-                    $io->success(TelegramApi::getWebhookUrl());
+                    $io->success(Bot::getWebhookUrl());
                     break;
 
                 case '2':
