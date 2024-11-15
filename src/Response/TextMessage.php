@@ -39,7 +39,6 @@ class TextMessage extends AbstractResponse
     public function telegramFormat(int|string $chat_id = null): array
     {
         return array_merge(
-            $this->method->getDefaultOptions(),
             $this->options,
             [
                 'chat_id' => $chat_id,
