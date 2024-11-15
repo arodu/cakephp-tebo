@@ -1,6 +1,9 @@
 
 # TeBo: CakePHP plugin for Telegram Bot
 
+> [!WARNING]  
+> This plugin is under development and not ready for production. 
+
 TeBo is a plugin that integrates a Telegram bot into CakePHP 5 applications, allowing configuration and management of custom commands with an easy setup.
 
 ## Installation
