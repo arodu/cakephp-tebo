@@ -13,6 +13,7 @@ use TeBo\TeBoPlugin;
 use TeBo\Enum\UpdateType;
 use TeBo\Response\ResponseInterface;
 use TeBo\Utility\Bot;
+use TeBo\Utility\MessageCommand;
 use TeBo\Utility\Trait\DataManageTrait;
 
 class Update
@@ -92,23 +93,10 @@ class Update
         return $this->getChat()->send($response);
     }
 
-    /**
-     * Checks if the update is a command.
-     *
-     * @return bool Returns true if the update is a command, false otherwise.
-     */
-    public function isCommand(): bool
-    {
-        return $this->getMessage()->isCommand();
-    }
-
-    /**
-     * Get the name of the command from the update.
-     *
-     * @return string|null The name of the command, or null if it is not a command.
-     */
     public function getCommandName(): ?string
     {
-        return $this->getMessage()->getCommandName();
+        $commandMessage = new MessageCommand($this->getMessage());
+
+        return $commandMessage->getCommandName();
     }
 }

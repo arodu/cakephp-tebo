@@ -22,7 +22,7 @@ class HelpAction extends Action
     /**
      * @inheritDoc
      */
-    public function execute(Update $update): void
+    public function execute(): void
     {
         $descriptionList = Bot::getCommandDescriptionList();
 
@@ -32,6 +32,6 @@ class HelpAction extends Action
             $message->addText('/' . $command['command'] . ' ' . $command['description']);
         }
 
-        $update->reply($message);
+        $this->getChat()->send($message);
     }
 }

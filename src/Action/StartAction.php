@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TeBo\Action;
@@ -22,13 +23,13 @@ class StartAction extends Action
     /**
      * @inheritDoc
      */
-    public function execute(Update $update): void
+    public function execute(): void
     {
-        $update->reply(new TextMessage(__('Start command executed!')));
+        $this->getChat()->send(new TextMessage(__('Start command executed!')));
 
         if (Configure::read('debug')) { // this only runs if the debug mode is enabled
-            $update->reply(new HtmlMessage([
-                'your chat id is: <i>' . $update->getChat()->getId() . '</i>',
+            $this->getChat()->send(new HtmlMessage([
+                'your chat id is: <i>' . $this->getChat()->getId() . '</i>',
                 'you can use this id to send messages to this chat',
                 'you can also use this id to send messages to other chats',
                 'to change to command, can creat new command file in <code>src/TeBo/Command</code>',

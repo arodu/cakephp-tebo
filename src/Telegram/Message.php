@@ -33,21 +33,8 @@ class Message
         return $this->type;
     }
 
-    public function isCommand(): bool
+    public function getText(): ?string
     {
-        return $this->type->is(MessageType::GROUP_COMMAND);
-    }
-
-    public function getCommandName(): ?string
-    {
-        if (!$this->isCommand()) {
-            return null;
-        }
-
-        $entities = Hash::get($this->getOriginalData(), 'entities');
-        $commandEntity = array_filter($entities, fn($entity) => $entity['type'] === 'bot_command');
-        $commandEntity = reset($commandEntity);
-
-        return substr($this->get('text'), $commandEntity['offset'] + 1, $commandEntity['length'] - 1);
+        return $this->get('text') ?? null;
     }
 }

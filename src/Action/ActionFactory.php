@@ -40,7 +40,7 @@ class ActionFactory
         }
 
         if (is_string($action) && class_exists($action) && is_subclass_of($action, ActionInterface::class)) {
-            $action = new $action();
+            $action = new $action($update);
         }
 
         if ($action instanceof ActionInterface) {

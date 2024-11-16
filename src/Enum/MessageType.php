@@ -60,6 +60,8 @@ enum MessageType: string
     public function is(string $type): bool
     {
         return match ($type) {
+            self::GROUP_COMMAND => $this === self::COMMAND,
+            self::GROUP_CONTACT => $this === self::CONTACT,
             self::GROUP_TEXT => in_array($this, [
                 self::TEXT,
                 self::LINK,
@@ -91,9 +93,6 @@ enum MessageType: string
                 self::POLL,
                 self::DICE,
             ]),
-            self::GROUP_CONTACT => $this === self::CONTACT,
-            self::GROUP_COMMAND => $this === self::COMMAND,
-
             default => false,
         };
     }

@@ -10,7 +10,7 @@ class CustomResponse implements ResponseInterface
 {
     protected TelegramMethod|string|null $method;
     protected ?array $options;
-    protected ?mixed $format;
+    protected mixed $format;
 
     /**
      * @param array $options

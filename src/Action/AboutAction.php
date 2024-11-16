@@ -14,7 +14,7 @@ class AboutAction extends Action
     /**
      * @inheritDoc
      */
-    public function execute(Update $update): void
+    public function execute(): void
     {
         if (!Configure::read('debug')) {
             return; // this only runs if the debug mode is enabled
@@ -31,6 +31,6 @@ class AboutAction extends Action
                 'You can find the source code on GitHub:',
                 'https://github.com/arodu/cakephp-tebo',
             ]);
-        $update->reply($message);
+        $this->getChat()->send($message);
     }
 }

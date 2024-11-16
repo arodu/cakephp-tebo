@@ -13,8 +13,8 @@ class DefaultAction extends Action
     /**
      * @inheritDoc
      */
-    public function execute(Update $update): void
+    public function execute(): void
     {
-        Bot::debug(__METHOD__, $update->getOriginalData());
+        Bot::debug(__METHOD__, $this->getUpdate()->getOriginalData());
     }
 }
