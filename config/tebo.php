@@ -53,6 +53,7 @@ return [
                 'help' => \TeBo\Action\HelpAction::class,    // Action for the 'help' command.
                 //'hello' => \TeBo\Action\HelloAction::class,
                 //'example' => \TeBo\Action\ExampleAction::class,
+                'default' => \TeBo\Action\NotFoundAction::class,  // Default action if no match is found.
             ],
 
             /**

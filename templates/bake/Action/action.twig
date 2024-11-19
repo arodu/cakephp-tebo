@@ -1,23 +1,24 @@
+{% set actionNamespace = namespace ~ '\\TeBo\\Action' ~ (dir|length > 0 ? '\\' ~ dir : '') %}
+
 {{ element('Bake.file_header', {
-    namespace: "#{namespace}\\TeBo\\Action",
+    namespace: actionNamespace,
     classImports: [
         'TeBo\\Action\\Action',
+        'TeBo\\Action\\Command\\MessageCommandTrait',
         'TeBo\\Response\\HtmlMessage',
-        'TeBo\\Telegram\\Update',
     ],
 }) }}
 
 /**
- * {{ name }} TeBo action
- * This action is used to handle the {{ name|underscore }} command.
- * 
- * @method string description(): ?string
- * @method void execute(Update $update): void
+ * {{ (dir|length > 0 ? dir ~ '/' : '') ~ className }} action
+ * This action is used to handle the /{{ teboCommand }} command.
  */
-class {{ name }}Action extends Action
+class {{ className }}Action extends Action
 {
+    use MessageCommandTrait;
+
     /**
-     * Initialize the action.
+     * @return void
      */
     public function initialize(): void
     {
@@ -25,23 +26,23 @@ class {{ name }}Action extends Action
     }
 
     /**
-     * The command description for the help command.
+     * The command description for the help action.
      *
      * @return string|null
      */
     public function description(): ?string
     {
-        return __('{{ name|underscore|humanize }} command');
+        return __('{{ teboCommand }} action.');
     }
 
     /**
-     * Execute the action with the given update.
+     * Execute the action.
      * 
-     * @param Update $update
      * @return void
      */
-    public function execute(Update $update): void
+    public function execute(): void
     {
-        $update->reply(new HtmlMessage(__('Hello, I am <code>/{{ name|underscore }}</code> command')));
+        $message = new HtmlMessage(__('Hello, I am <code>/{{ teboCommand }}</code> action.'));
+        $this->getChat()->send($message);
     }
 }

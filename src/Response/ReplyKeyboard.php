@@ -6,7 +6,7 @@ namespace TeBo\Response;
 
 use TeBo\Utility\Trait\RegisterListTrait;
 
-class Buttons extends TextMessage implements ResponseInterface
+class InlineKeyboard extends TextMessage implements ResponseInterface
 {
     use RegisterListTrait;
 
@@ -76,9 +76,14 @@ class Buttons extends TextMessage implements ResponseInterface
                 'chat_id' => $chat_id,
                 'text' => $this->getText(),
                 'reply_markup' => json_encode([
-                    'inline_keyboard' => [
-                        $this->registerList(),
+                    'reply_keyboard_markup' => [
+                        'keyboard' => [
+                            $this->registerList(),
+                        ],
                     ],
+                    //'inline_keyboard' => [
+                    //    $this->registerList(),
+                    //],
                 ]),
             ]
         );
