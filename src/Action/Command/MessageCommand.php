@@ -38,10 +38,10 @@ class MessageCommand
     }
 
     /**
-     * @param integer|array|null $argumentKeys
+     * @param integer|array|callable|null $argumentKeys
      * @return static
      */
-    public function setArgumentKeys(int|array|null $argumentKeys): static
+    public function setArgumentKeys(int|array|callable|null $argumentKeys): static
     {
         $this->setConfig('argumentKeys', $argumentKeys);
 
@@ -73,22 +73,6 @@ class MessageCommand
     }
 
     /**
-     * @return string|null
-     */
-    protected function getTextArguments(): ?string
-    {
-        if (!$this->isCommand()) {
-            return null;
-        }
-
-        $entities = Hash::get($this->message->getOriginalData(), 'entities');
-        $commandEntity = array_filter($entities, fn($entity) => $entity['type'] === 'bot_command');
-        $commandEntity = reset($commandEntity);
-
-        return substr($this->message->getText(), $commandEntity['offset'] + $commandEntity['length'] + 1);
-    }
-
-    /**
      * @return array
      */
     public function getArguments(): array
@@ -99,8 +83,8 @@ class MessageCommand
 
         if (empty($this->getConfig('arguments'))) {
             $text = $this->getTextArguments();
-            $arguments = $this->parseTextToArray($text, $this->getConfig('argumentKeys'));
-            $this->setConfig('arguments', $arguments);
+            $args = $this->parseTextToArray($text, $this->getConfig('argumentKeys'));
+            $this->setArguments($args);
         }
 
         return $this->getConfig('arguments') ?? [];
@@ -117,11 +101,39 @@ class MessageCommand
     }
 
     /**
-     * @param string $text
-     * @param integer|array|null $structure
-     * @return array
+     * @param array $args
+     * @return static
      */
-    protected function parseTextToArray(string $text, int|array|null $structure): array
+    public function setArguments(array $args): static
+    {
+        $this->setConfig('arguments', $args ?? []);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getTextArguments(): ?string
+    {
+        if (!$this->isCommand()) {
+            return null;
+        }
+
+        $entities = Hash::get($this->message->getOriginalData(), 'entities');
+        $commandEntity = array_filter($entities, fn($entity) => $entity['type'] === 'bot_command');
+        $commandEntity = reset($commandEntity);
+
+        return substr($this->message->getText(), $commandEntity['offset'] + $commandEntity['length'] + 1);
+    }
+
+    /**
+     * @param string $text
+     * @param integer|array|callable|null $structure
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    protected function parseTextToArray(string $text, int|array|callable|null $structure): array
     {
         if (empty($text)) {
             return [];
@@ -131,19 +143,31 @@ class MessageCommand
             return [0 => $text];
         }
 
+        if (is_callable($structure)) {
+            $result = $structure($text);
+            if (!is_array($result)) {
+                throw new \InvalidArgumentException('Invalid structure type, callable must return an array');
+            }
+
+            return $result;
+        }
+
+        $separator = $this->getConfig('separator', ' ');
+
         if (is_int($structure)) {
-            $parts = explode(' ', $text, $structure);
+            $parts = explode($separator, $text, $structure);
+
             return array_combine(range(0, count($parts) - 1), $parts);
         }
 
         if (is_array($structure)) {
             $result = [];
             $keys = array_keys($structure);
-            $textParts = explode(' ', $text);
+            $textParts = explode($separator, $text);
 
             foreach ($keys as $index => $key) {
                 if ($index === count($keys) - 1) {
-                    $result[$key] = implode(' ', $textParts);
+                    $result[$key] = implode($separator, $textParts);
                 } else {
                     $result[$key] = array_shift($textParts);
                 }
@@ -153,6 +177,6 @@ class MessageCommand
             return $result;
         }
 
-        throw new \InvalidArgumentException('El parámetro $structure debe ser un array o un número entero.');
+        throw new \InvalidArgumentException('Invalid structure type, must be an integer, array, callable or null');
     }
 }

@@ -27,22 +27,25 @@ trait MessageCommandTrait
     }
 
     /**
+     * @param MessageCommand $messageCommand
+     * @return static
+     */
+    public function setMessageCommand(MessageCommand $messageCommand): static
+    {
+        $this->messageCommand = $messageCommand;
+
+        return $this;
+    }
+
+    /**
      *
      * @param array $args
      * @return static
      */
     public function setArguments(array $args): static
     {
-        $this->getMessageCommand()->setConfig('arguments', $args);
+        $this->getMessageCommand()->setArguments($args);
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArguments(): array
-    {
-        return $this->getMessageCommand()->getArguments();
     }
 }
