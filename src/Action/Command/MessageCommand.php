@@ -77,10 +77,6 @@ class MessageCommand
      */
     public function getArguments(): array
     {
-        if (!$this->isCommand()) {
-            return [];
-        }
-
         if (empty($this->getConfig('arguments'))) {
             $text = $this->getTextArguments();
             $args = $this->parseTextToArray($text, $this->getConfig('argumentKeys'));
