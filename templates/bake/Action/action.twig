@@ -1,5 +1,4 @@
 {% set actionNamespace = namespace ~ '\\TeBo\\Action' ~ (dir|length > 0 ? '\\' ~ dir : '') %}
-
 {{ element('Bake.file_header', {
     namespace: actionNamespace,
     classImports: [
