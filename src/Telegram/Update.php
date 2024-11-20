@@ -9,11 +9,11 @@ use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use TeBo\Action\Command\MessageCommand;
 use TeBo\TeBoPlugin;
 use TeBo\Enum\UpdateType;
 use TeBo\Response\ResponseInterface;
 use TeBo\Utility\Bot;
-use TeBo\Utility\MessageCommand;
 use TeBo\Utility\Trait\DataManageTrait;
 
 class Update
@@ -97,6 +97,6 @@ class Update
     {
         $commandMessage = new MessageCommand($this->getMessage());
 
-        return $commandMessage->getCommandName();
+        return $commandMessage->getCommandName() ?? null;
     }
 }

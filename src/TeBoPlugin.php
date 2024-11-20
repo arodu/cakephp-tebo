@@ -44,7 +44,7 @@ class TeBoPlugin extends BasePlugin
                 'file' => 'debug_tebo',
                 'url' => env('LOG_TEBO_URL', null),
                 'scopes' => ['tebo'],
-                'levels' => ['notice', 'info', 'debug'],
+                'levels' => ['notice', 'info', 'debug', 'warning', 'error'],
             ]);
         }
 
