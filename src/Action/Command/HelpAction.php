@@ -6,7 +6,6 @@ namespace TeBo\Action;
 
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;
-use TeBo\Telegram\Update;
 use TeBo\Utility\Bot;
 
 class HelpAction extends Action

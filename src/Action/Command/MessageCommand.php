@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Utility;
+namespace TeBo\Action\Command;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Utility\Hash;
@@ -13,31 +13,52 @@ class MessageCommand
 {
     use InstanceConfigTrait;
 
+    /**
+     * @var Message
+     */
+    protected Message $message;
+
+    /**
+     * @var array
+     */
     protected $_defaultConfig = [
         'argumentKeys' => null,
         'separator' => ' ',
+        'arguments' => [],
     ];
 
-    protected Message $message;
-
-    protected int|array|null $argumentKeys;
-
+    /**
+     * @param Message $message
+     * @param array $config
+     */
     public function __construct(Message $message, array $config = [])
     {
         $this->message = $message;
         $this->setConfig($config);
     }
 
-    public function setArgumentKeys(int|array|null $argumentKeys): void
+    /**
+     * @param integer|array|null $argumentKeys
+     * @return static
+     */
+    public function setArgumentKeys(int|array|null $argumentKeys): static
     {
         $this->setConfig('argumentKeys', $argumentKeys);
+
+        return $this;
     }
 
+    /**
+     * @return boolean
+     */
     public function isCommand(): bool
     {
         return $this->message->getType()->is(MessageType::GROUP_COMMAND);
     }
 
+    /**
+     * @return string|null
+     */
     public function getCommandName(): ?string
     {
         if (!$this->isCommand()) {
@@ -51,7 +72,10 @@ class MessageCommand
         return substr($this->message->getText(), $commandEntity['offset'] + 1, $commandEntity['length'] - 1);
     }
 
-    public function getTextArguments(): ?string
+    /**
+     * @return string|null
+     */
+    protected function getTextArguments(): ?string
     {
         if (!$this->isCommand()) {
             return null;
@@ -64,24 +88,39 @@ class MessageCommand
         return substr($this->message->getText(), $commandEntity['offset'] + $commandEntity['length'] + 1);
     }
 
+    /**
+     * @return array
+     */
     public function getArguments(): array
     {
         if (!$this->isCommand()) {
             return [];
         }
 
-        $text = $this->getTextArguments();
+        if (empty($this->getConfig('arguments'))) {
+            $text = $this->getTextArguments();
+            $arguments = $this->parseTextToArray($text, $this->getConfig('argumentKeys'));
+            $this->setConfig('arguments', $arguments);
+        }
 
-        return $this->parseTextToArray($text, $this->getConfig('argumentKeys'));
+        return $this->getConfig('arguments') ?? [];
     }
 
+    /**
+     * @param integer|string $key
+     * @return mixed
+     */
     public function getArgument(int|string $key): mixed
     {
         $arguments = $this->getArguments();
-
         return $arguments[$key] ?? null;
     }
 
+    /**
+     * @param string $text
+     * @param integer|array|null $structure
+     * @return array
+     */
     protected function parseTextToArray(string $text, int|array|null $structure): array
     {
         if (empty($text)) {

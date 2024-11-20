@@ -42,6 +42,11 @@ class {{ className }}Action extends Action
      */
     public function execute(): void
     {
+        // add this action to the command list in config/tebo.php
+        // 'actions' => [
+        //     '{{ teboCommand }}' => \{{ actionNamespace }}\{{ className }}Action::class,
+        // ]
+
         $message = new HtmlMessage(__('Hello, I am <code>/{{ teboCommand }}</code> action.'));
         $this->getChat()->send($message);
     }

@@ -7,7 +7,6 @@ namespace TeBo\Action;
 use Cake\Core\Configure;
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;
-use TeBo\Telegram\Update;
 
 class AboutAction extends Action
 {

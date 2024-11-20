@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace TeBo\Action\Command;
 
-use TeBo\Telegram\Update;
-use TeBo\Utility\MessageCommand;
-
 /**
- * Trait CommandTrait
- *
- * @package TeBo\Action\Command
- * @method Update getUpdate()
+ * Trait MessageCommand
  */
 trait MessageCommandTrait
 {
@@ -30,5 +24,25 @@ trait MessageCommandTrait
         }
 
         return $this->messageCommand;
+    }
+
+    /**
+     *
+     * @param array $args
+     * @return static
+     */
+    public function setArguments(array $args): static
+    {
+        $this->getMessageCommand()->setConfig('arguments', $args);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->getMessageCommand()->getArguments();
     }
 }
