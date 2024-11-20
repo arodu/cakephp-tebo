@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Action;
+namespace TeBo\Action\Command;
 
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;

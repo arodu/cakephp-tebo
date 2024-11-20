@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Action;
+namespace TeBo\Action\Command;
 
 use Cake\Core\Configure;
 use TeBo\Action\Action;

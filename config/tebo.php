@@ -6,6 +6,7 @@ use TeBo\Enum\UpdateType;
 
 return [
     'tebo' => [
+
         /**
          * Telegram configuration:
          * Contains the authentication token and the base URL for the Telegram API.
@@ -48,12 +49,12 @@ return [
              * - If no specific key is found, the default action will be executed.
              */
             UpdateType::COMMAND->value => [
-                'start' => \TeBo\Action\StartAction::class,  // Action for the 'start' command.
-                'about' => \TeBo\Action\AboutAction::class,  // Action for the 'about' command.
-                'help' => \TeBo\Action\HelpAction::class,    // Action for the 'help' command.
+                'start' => \TeBo\Action\Command\StartAction::class,  // Action for the '/start' command.
+                'about' => \TeBo\Action\Command\AboutAction::class,  // Action for the '/about' command.
+                'help' => \TeBo\Action\Command\HelpAction::class,    // Action for the '/help' command.
                 //'hello' => \TeBo\Action\HelloAction::class,
                 //'example' => \TeBo\Action\ExampleAction::class,
-                'default' => \TeBo\Action\NotFoundAction::class,  // Default action if no match is found.
+                'default' => \TeBo\Action\Command\NotFoundAction::class,  // Default action if no match is found.
             ],
 
             /**
