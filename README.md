@@ -84,8 +84,8 @@ return [
     ],
 ];
 ```
-> [!INFO]  
-> You can find more information about this file on `vendor/arodu/tebo/config/tebo.php`
+> [!NOTE]  
+> You can find more information about this file on `config/tebo.php` in the plugin's directory.
 
 ## Usage
 
@@ -124,11 +124,11 @@ To add the command to the configuration file:
 ],
 ```
 
-After adding the command, you can test it by sending `/prices` to the bot.
-
+> [!NOTE]
+> After adding the command, you can test it by sending `/prices` to the bot.
 
 ### Bake a New Action
-Or you can bake a new action using the following command:
+Also, you can bake a new action using the following command:
 
 ```bash
 bin/cake bake action Prices
@@ -150,7 +150,8 @@ $message = new \TeBo\Response\HtmlMessage([
 $this->getChat()->send($message);
 ```
 
-In this example, HTML tags such as `<b>`, `<i>`, `<a>`, and `<code>` are supported for text formatting.
+> [!NOTE]
+> In this example, HTML tags such as `<b>`, `<i>`, `<a>`, and `<code>` are supported for text formatting.
 
 ### Send a Photo
 - **Example 1**: Send a Local Photo  
