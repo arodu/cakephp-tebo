@@ -1,9 +1,6 @@
 
 # TeBo: CakePHP plugin for Telegram Bot
 
-> [!WARNING]  
-> This plugin is under development and not ready for production. 
-
 TeBo is a plugin that integrates a Telegram bot into CakePHP 5 applications, allowing configuration and management of custom commands with an easy setup.
 
 ## Installation
@@ -34,8 +31,11 @@ bin/cake tebo
 The available options are:
 
 1. **Get Webhook URL**: Displays the current webhook URL configured on the local system.
-2. **Set Webhook to Telegram**: Sets the webhook on Telegram, linking the bot to a specific URL to receive updates.
-3. **Get Webhook Info from Telegram**: Shows information about the webhook configured on Telegram, including status and connection details.
+2. **Set Webhook to telegram**: Sets the webhook on Telegram, linking the bot to a specific URL to receive updates.
+3. **Delete Webhook from telegram**: Deletes the webhook from Telegram, stopping the bot from receiving updates.
+4. **Get Webhook info from telegram**: Shows information about the webhook configured on Telegram, including status and connection details.
+5. **Get bot info**: Displays information about the bot, including the bot's name, username, and ID.
+
 
 ### Additional Configuration (Optional)
 
@@ -71,44 +71,45 @@ return [
             'action' => 'webhook',
         ],
         'obfuscation' => env('WEBHOOK_OBFUSCATION', null), // Sets the webhook URL obfuscation.
-        'command' => [
-            'mapper' => [ // Command mapping, allowing for custom commands.
-                'default' => \TeBo\TeBo\Command\DefaultCommand::class, // Default command if no other command is found.
-                'start' => \TeBo\TeBo\Command\Start::class, 
-                'about' => \TeBo\TeBo\Command\About::class,
-                'hello' => \TeBo\TeBo\Command\Hello::class,
+        'actions' => [
+            'mapper' => [ // Command mapping, allowing for custom actions.
+                'start' => \TeBo\Action\Command\StartAction::class, // Action for the '/start' command.
+                'about' => \TeBo\Action\Command\AboutAction::class, // Action for the '/about' command.
+                'help' => \TeBo\Action\Command\HelpAction::class, // Action for the '/help' command.
+                'default' => \TeBo\Action\Command\NotFoundAction::class, // Action for the default command, executed when no command is found.
             ],
-            'namespaces' => [
-                '\App\TeBo\Command', // Defines additional namespaces for custom commands.
-                // Command classes must match commands; for example, `/prices` should correspond to `\App\TeBo\Command\Prices` and implement `\TeBo\TeBo\CommandInterface`.
-            ],
+
+            'default' => \TeBo\Action\DefaultAction::class,  // Default action if no match is found.
         ],
     ],
 ];
 ```
+> [!INFO]  
+> You can find more information about this file on `vendor/arodu/tebo/config/tebo.php`
 
 ## Usage
 
-The plugin provides a default command that can be extended to create custom commands. To create a new command, follow these steps:
+The plugin provides a default Action that can be extended to create custom actions. To create a new action, follow these steps:
 
-1. Create a new command class in the `src/Command` directory.
-2. Extend from `TeBoCommand` or Implement the `CommandInterface` interface.
+1. Create a new command class in the `src/Actions` directory.
+2. Extend from `\TeBo\Action\Action` or Implement the `\TeBo\Action\ActionInterface` interface.
 3. Add the command to the `config/tebo.php` file.
 
 ```php
 <?php
-namespace App\TeBo\Command;
+namespace App\Actions;
 
-class Prices extends \TeBo\TeBo\TeBoCommand
+class Prices extends \TeBo\Action\Action
 {
-    public function help(): ?string
+    public function description(): ?string
     {
-        return null;
+        return 'Get the current prices.';
     }
 
-    public function execute(\TeBo\Telegram\Update $update): void
+    public function execute(): void
     {
-        $update->getChat()->send(new \TeBo\Telegram\Response\TextMessage('The current prices are: $100'));
+        $message = new \TeBo\Response\TextMessage('The current price is $100');
+        $this->getChat()->send($message);
     }
 }
 ```
@@ -118,25 +119,35 @@ To add the command to the configuration file:
 ```php
 'command' => [
     'mapper' => [
-        'prices' => \App\TeBo\Command\Prices::class,
+        'prices' => \App\Actions\Prices::class,
     ],
 ],
 ```
 
 After adding the command, you can test it by sending `/prices` to the bot.
 
+
+### Bake a New Action
+Or you can bake a new action using the following command:
+
+```bash
+bin/cake bake action Prices
+```
+
 ### Send an HTML Formatted Message
 To send a message with HTML formatting, use HtmlMessage:
 
 ```php
-$update->reply(new \TeBo\Telegram\Response\HtmlMessage([
+$message = new \TeBo\Response\HtmlMessage([
     '<b>HTML Message</b>',
     '',
     'This is an example of an HTML message.',
     'You can use basic HTML tags to format the text.',
     'Example: <b>bold</b>, <i>italic</i>, <a href="https://example.com">link</a>',
     'Refer to Telegram API documentation for more info.',
-]));
+]);
+
+$this->getChat()->send($message);
 ```
 
 In this example, HTML tags such as `<b>`, `<i>`, `<a>`, and `<code>` are supported for text formatting.
@@ -147,7 +158,7 @@ If the image is stored locally, use the path to the image file:
 
 ```php
 $file = fopen(TEBO_CORE_PATH . DS . '/resources/tebo.jpg', 'rb');
-$photo = new \TeBo\Telegram\Response\Photo($file, 'This is a placeholder image.');
+$photo = new \TeBo\Response\Photo($file, 'This is a placeholder image.');
 $update->reply($photo);
 ```
 
@@ -155,7 +166,7 @@ $update->reply($photo);
 You can also send a photo from a URL with a custom caption:
 
 ```php
-$photo = new \TeBo\Telegram\Response\Photo('https://placehold.it/300x200');
+$photo = new \TeBo\Response\Photo('https://placehold.it/300x200');
 $update->reply($photo);
 ```
 
@@ -166,7 +177,7 @@ To send a message to a specific chat ID, use the following code:
 ```php
 $chatId = '12345678'; // The Telegram chat ID to send the message to
 $chat = new \TeBo\Telegram\Chat(['id' => $chatId]); // Creates a Chat instance with the specified ID
-$message = new \TeBo\Telegram\Response\TextMessage('Hello!'); // Creates the text message to send
+$message = new \TeBo\Response\TextMessage('Hello!'); // Creates the text message to send
 $chat->send($message); // Sends the message to the specified chat
 ```
 
