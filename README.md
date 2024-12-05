@@ -15,7 +15,7 @@ TeBo is a plugin that integrates a Telegram bot into CakePHP 5 applications, all
    bin/cake plugin load TeBo
    ```
 
-3. Add your Telegram bot token to the `.env` file:
+3. Add your Telegram bot token to the `.env` file, or set it as an environment variable:
    ```bash
    export TELEGRAM_TOKEN="xxxxx"
    ```
@@ -35,7 +35,6 @@ The available options are:
 3. **Delete Webhook from telegram**: Deletes the webhook from Telegram, stopping the bot from receiving updates.
 4. **Get Webhook info from telegram**: Shows information about the webhook configured on Telegram, including status and connection details.
 5. **Get bot info**: Displays information about the bot, including the bot's name, username, and ID.
-
 
 ### Additional Configuration (Optional)
 
@@ -72,13 +71,12 @@ return [
         ],
         'obfuscation' => env('WEBHOOK_OBFUSCATION', null), // Sets the webhook URL obfuscation.
         'actions' => [
-            'mapper' => [ // Command mapping, allowing for custom actions.
+            'command' => [ // Command mapping, allowing for custom actions.
                 'start' => \TeBo\Action\Command\StartAction::class, // Action for the '/start' command.
                 'about' => \TeBo\Action\Command\AboutAction::class, // Action for the '/about' command.
                 'help' => \TeBo\Action\Command\HelpAction::class, // Action for the '/help' command.
                 'default' => \TeBo\Action\Command\NotFoundAction::class, // Action for the default command, executed when no command is found.
             ],
-
             'default' => \TeBo\Action\DefaultAction::class,  // Default action if no match is found.
         ],
     ],
@@ -114,11 +112,11 @@ class Prices extends \TeBo\Action\Action
 }
 ```
 
-To add the command to the configuration file:
+To add the command to the configuration file `config/tebo.php`, use the following code:
 
 ```php
-'command' => [
-    'mapper' => [
+'actions' => [
+    'command' => [
         'prices' => \App\Actions\Prices::class,
     ],
 ],
