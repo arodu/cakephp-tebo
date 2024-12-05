@@ -13,7 +13,9 @@ class Photo extends AbstractResponse implements ResponseInterface
 
     protected $photo;
     protected TelegramMethod|string $method = TelegramMethod::SEND_PHOTO;
-    protected array $options = [];
+    protected array $options = [
+        'parse_mode' => 'HTML',
+    ];
 
     public function __construct($photo = null, string|array|null $caption = null, array $options = [])
     {
