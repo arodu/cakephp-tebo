@@ -183,7 +183,7 @@ $chat->send($message); // Sends the message to the specified chat
 ## Notes
 
 - Ensure that the `.env` file is properly configured before testing the bot.
-- The default command executed by the plugin is `\TeBo\TeBo\Command\DefaultCommand::class`. You can disable it by setting it to `null`.
+- The default command executed by the plugin is `\TeBo\Action\Command\NotFoundAction::class`. You can disable it by setting it to `null`.
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
