@@ -85,6 +85,26 @@ class Chat
     }
 
     /**
+     * @param string|array $html
+     * @param array $options
+     * @return boolean
+     */
+    public function sendHtml(string|array $html, array $options = []): bool
+    {
+        return $this->send(new \Tebo\Response\HtmlMessage($html, $options));
+    }
+
+    /**
+     * @param string|array $text
+     * @param array $options
+     * @return boolean
+     */
+    public function sendText(string|array $text, array $options = []): bool
+    {
+        return $this->send(new \Tebo\Response\TextMessage($text, $options));
+    }
+
+    /**
      * Send chat action.
      *
      * @param string $action The action to send.
