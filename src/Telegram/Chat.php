@@ -7,6 +7,7 @@ namespace TeBo\Telegram;
 use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\Enum\TelegramMethod;
+use TeBo\Response\HtmlMessage;
 use TeBo\Response\ResponseInterface;
 use TeBo\Utility\Bot;
 use TeBo\Utility\Trait\DataManageTrait;

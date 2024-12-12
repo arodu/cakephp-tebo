@@ -48,6 +48,38 @@ export WEBHOOK_BASE="your_base_url_here"
 - **WEBHOOK_OBFUSCATION**: Obfuscates the webhook URL, adding an additional security layer.
 - **WEBHOOK_BASE**: Sets the base domain for the webhook URL. If not specified, `127.0.0.1` is used, which is incompatible with the Telegram API.
 
+Here's the translated version of the section:
+
+---
+
+### Configuring CSRF Protection
+
+CakePHP includes built-in protection against Cross-Site Request Forgery (CSRF) attacks. However, to allow Telegram webhooks to work properly with TeBo, you need to exclude requests coming from the plugin from this protection.
+
+To do this, adjust the middleware configuration in the `src/Application.php` file. Modify the `middleware` method to include the following logic:
+
+```php
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $csrf = new CsrfProtectionMiddleware(['httponly' => true]);
+
+    $csrf->skipCheckCallback(function ($request) {
+        // Exclude requests from the TeBo plugin from CSRF protection
+        if ($request->getParam('plugin') === 'TeBo') {
+            return true;
+        }
+    });
+
+    $middlewareQueue->add($csrf);
+
+    return $middlewareQueue;
+}
+```
+
+> [!WARNING]
+> ***Why Is This Necessary?***
+> Telegram cannot send custom headers (such as CSRF tokens), which would cause webhook requests to be rejected if CSRF protection is enabled. By configuring this exclusion, we allow Telegram to interact with our application without compromising the overall security.
+
 ## Bot Testing
 
 Once the webhook and token are configured, the bot should be ready to work. You can test it on Telegram using the following commands:
@@ -82,7 +114,7 @@ return [
     ],
 ];
 ```
-> [!NOTE]  
+> [!NOTE]
 > You can find more information about this file on `config/tebo.php` in the plugin's directory.
 
 ## Usage
