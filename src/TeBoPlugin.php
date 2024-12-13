@@ -78,7 +78,6 @@ class TeBoPlugin extends BasePlugin
                 if (!empty($obfuscation) && is_string($obfuscation)) {
                     $webhookRoute = '/' . $obfuscation;
                 }
-
                 $webhookUrl = Configure::read('tebo.webhookUrl');
                 $builder->connect($webhookRoute, [
                     'plugin' => $webhookUrl['plugin'],
@@ -87,6 +86,7 @@ class TeBoPlugin extends BasePlugin
                 ]);
             }
         );
+
         parent::routes($routes);
     }
 
