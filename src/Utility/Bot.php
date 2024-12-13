@@ -57,7 +57,7 @@ class Bot
 
         foreach ($classes ?? [] as $command => $class) {
             if (class_exists($class) && is_subclass_of($class, ActionInterface::class)) {
-                $description = (new $class())->description();
+                $description = $class::description();
                 if ($description) {
                     $commandList[] = [
                         'command' => $command,

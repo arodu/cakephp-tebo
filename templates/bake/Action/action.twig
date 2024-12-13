@@ -25,16 +25,6 @@ class {{ className }}Action extends Action
     }
 
     /**
-     * The command description for the help action.
-     *
-     * @return string|null
-     */
-    public function description(): ?string
-    {
-        return __('{{ teboCommand }} action.');
-    }
-
-    /**
      * Execute the action.
      * 
      * @return void
@@ -48,5 +38,15 @@ class {{ className }}Action extends Action
 
         $message = new HtmlMessage(__('Hello, I am <code>/{{ teboCommand }}</code> action.'));
         $this->getChat()->send($message);
+    }
+
+    /**
+     * The command description for the help action.
+     *
+     * @return string|null
+     */
+    public static function description(): ?string
+    {
+        return __('{{ teboCommand }} action.');
     }
 }

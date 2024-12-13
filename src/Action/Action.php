@@ -81,7 +81,7 @@ abstract class Action implements ActionInterface
      *
      * @return string|null
      */
-    public function description(): ?string
+    public static function description(): ?string
     {
         return null;
     }

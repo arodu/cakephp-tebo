@@ -15,7 +15,7 @@ class StartAction extends Action
     /**
      * @inheritDoc
      */
-    public function description(): ?string
+    public static function description(): ?string
     {
         return __('Start command');
     }
