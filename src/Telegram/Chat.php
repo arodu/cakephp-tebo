@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use TeBo\Enum\TelegramMethod;
 use TeBo\Response\HtmlMessage;
 use TeBo\Response\ResponseInterface;
+use TeBo\Response\TextMessage;
 use TeBo\Utility\Bot;
 use TeBo\Utility\Trait\DataManageTrait;
 use TeBo\Telegram\Api as TelegramApi;
@@ -92,7 +93,7 @@ class Chat
      */
     public function sendHtml(string|array $html, array $options = []): bool
     {
-        return $this->send(new \Tebo\Response\HtmlMessage($html, $options));
+        return $this->send(new HtmlMessage($html, $options));
     }
 
     /**
@@ -102,7 +103,7 @@ class Chat
      */
     public function sendText(string|array $text, array $options = []): bool
     {
-        return $this->send(new \Tebo\Response\TextMessage($text, $options));
+        return $this->send(new TextMessage($text, $options));
     }
 
     /**
