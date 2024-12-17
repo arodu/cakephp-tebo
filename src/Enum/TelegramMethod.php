@@ -55,6 +55,8 @@ enum TelegramMethod: string
     case DELETE_WEBHOOK = 'deleteWebhook';
     case GET_WEBHOOK_INFO = 'getWebhookInfo';
     case GET_ME = 'getMe';
+    case GET_MY_COMMANDS = 'getMyCommands';
+    case DELETE_MY_COMMANDS = 'deleteMyCommands';
 
     public function getMethod(): string
     {

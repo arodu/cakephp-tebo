@@ -92,6 +92,6 @@ class Api
             return $method;
         }
 
-        throw new \InvalidArgumentException('Invalid method');
+        throw new \InvalidArgumentException('Invalid method ' . $method);
     }
 }
