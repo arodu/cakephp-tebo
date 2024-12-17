@@ -131,7 +131,7 @@ namespace App\Actions;
 
 class Prices extends \TeBo\Action\Action
 {
-    public function description(): ?string
+    public static function description(): ?string
     {
         return 'Get the current prices.';
     }
