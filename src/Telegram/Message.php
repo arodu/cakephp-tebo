@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TeBo\Telegram;
 
-use Cake\Utility\Hash;
 use TeBo\Enum\MessageType;
 use TeBo\Utility\Trait\DataManageTrait;
 

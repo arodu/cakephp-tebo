@@ -132,4 +132,28 @@ class Chat
     {
         return $this->chatAction(self::CHAT_ACTION_TYPING);
     }
+
+    /**
+     * @param string $method
+     * @param array $data
+     * @param array $options
+     * @return array
+     */
+    public function call(TelegramMethod|string $method, array $data = [], array $options = []): array
+    {
+        $data['chat_id'] = $this->id;
+        $this->lastResult = TelegramApi::call($method, $data, $options);
+        Bot::debug('Chat call response: ', $this->lastResult);
+
+        return $this->lastResult;
+    }
+
+    /**
+     * @param string $filePath
+     * @return string
+     */
+    public function downloadFile(string $filePath): string
+    {
+        return TelegramApi::downloadFile($filePath);
+    }
 }

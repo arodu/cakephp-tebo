@@ -79,6 +79,30 @@ class Api
     }
 
     /**
+     * @param string $filePath
+     * @return string
+     */
+    public static function downloadFile(string $filePath): string
+    {
+        $telegram = Configure::read('tebo.telegram');
+
+        if (empty($telegram['token'])) {
+            throw new \RuntimeException('Telegram configuration not found');
+        }
+
+        $downloadUrl = "https://api.telegram.org/file/bot{$telegram['token']}/{$filePath}";
+
+        $http = new Client();
+        $response = $http->get($downloadUrl);
+
+        if (!$response->isOk()) {
+            throw new \Exception('Falló la descarga del archivo de Telegram.');
+        }
+
+        return $response->getBody()->getContents();
+    }
+
+    /**
      * @param TelegramMethod|string $method
      * @return TelegramMethod
      */
