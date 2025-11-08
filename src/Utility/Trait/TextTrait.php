@@ -31,7 +31,7 @@ trait TextTrait
      * @param string|array|null $text The text to add. It can be a string or an array of strings.
      * @return static
      */
-    public function addText(string|array $text = null): static
+    public function addText(string|array|null $text = null): static
     {
         if (is_string($text)) {
             $this->text[] = $text;

@@ -4,46 +4,45 @@ declare(strict_types=1);
 
 namespace TeBo\Response;
 
-use TeBo\Enum\TelegramMethod;
+use TeBo\Telegram\LegacyResponseBuilder;
 use TeBo\Utility\Trait\TextTrait;
 
-class TextMessage extends AbstractResponse
+/**
+ * @deprecated use \TeBo\Telegram\Response::newMessage()->asHtml(false) instead
+ */
+class TextMessage implements ResponseInterface
 {
     use TextTrait;
 
-    protected TelegramMethod|string $method = TelegramMethod::SEND_MESSAGE;
-
-    protected array $options = [];
+    protected LegacyResponseBuilder $builder;
 
     public function __construct(string|array|null $text = null, array $options = [])
     {
-        $this->options = $options;
         $this->addText($text);
-        $this->initialize();
+
+        $this->builder = LegacyResponseBuilder::newMessage((string)$this->getText())->asHtml(false);
+
+        if (isset($options['reply_markup'])) {
+            $this->builder->setRawReplyKeyboard($options['reply_markup']);
+        }
+
+        $this->builder->addOptions($options);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function initialize(): void
+    public function telegramMethod(): string
     {
-        parent::initialize();
+        return $this->builder->telegramMethod();
     }
 
-    /**
-     * Get the data for the message.
-     *
-     * @param int|string|null $chat_id The ID of the chat.
-     * @return array The message data.
-     */
     public function telegramFormat(int|string|null $chat_id = null): array
     {
-        return array_merge(
-            $this->options,
-            [
-                'chat_id' => $chat_id,
-                'text' => $this->getText(),
-            ]
-        );
+        $this->builder->text((string)$this->getText());
+
+        return $this->builder->telegramFormat($chat_id);
+    }
+
+    public function httpOptions(): array
+    {
+        return $this->builder->httpOptions();
     }
 }

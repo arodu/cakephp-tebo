@@ -57,6 +57,7 @@ enum TelegramMethod: string
     case GET_ME = 'getMe';
     case GET_MY_COMMANDS = 'getMyCommands';
     case DELETE_MY_COMMANDS = 'deleteMyCommands';
+    case EDIT_MESSAGE_TEXT = 'editMessageText';
 
     public function getMethod(): string
     {

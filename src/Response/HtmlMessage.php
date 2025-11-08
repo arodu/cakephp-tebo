@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace TeBo\Response;
 
+use TeBo\Enum\TelegramMethod;
+use TeBo\Telegram\LegacyResponseBuilder;
+
+/**
+ * @deprecated Esta clase está obsoleta. 
+ * Usar ResponseBuilder::newMessage() en su lugar.
+ */
 class HtmlMessage extends TextMessage implements ResponseInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function initialize(): void
+    public function __construct(string|array|null $text = null, array $options = [])
     {
-        parent::initialize();
-        $this->options = array_merge($this->options, ['parse_mode' => 'HTML']);
+        $this->addText($text);
+
+        $this->builder = LegacyResponseBuilder::newMessage((string)$this->getText());
+
+        if (isset($options['reply_markup'])) {
+            $this->builder->setRawReplyKeyboard($options['reply_markup']);
+        }
+        $this->builder->addOptions($options);
     }
 }

@@ -5,21 +5,29 @@ declare(strict_types=1);
 namespace TeBo\Response;
 
 use TeBo\Enum\TelegramMethod;
+use TeBo\Telegram\LegacyResponseBuilder;
 
+/**
+ * @deprecated use \TeBo\Telegram\Response::create() instead
+ */
 class CustomResponse implements ResponseInterface
 {
-    protected TelegramMethod|string|null $method;
-    protected ?array $options;
+    protected ?LegacyResponseBuilder $builder;
     protected mixed $format;
+    protected array $options;
+    protected TelegramMethod|string|null $method;
 
-    /**
-     * @param array $options
-     */
     public function __construct(TelegramMethod|string|null $method = null, mixed $format = null, array $options = [])
     {
         $this->method = $method;
         $this->format = $format;
         $this->options = $options;
+        $this->builder = null;
+
+        if (is_array($this->format) && $this->method) {
+            $this->builder = LegacyResponseBuilder::create($this->method);
+            $this->builder->addOptions($this->format);
+        }
     }
 
     /**
@@ -55,34 +63,32 @@ class CustomResponse implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Get the data for the message.
-     *
-     * @param int|string|null $chat_id The ID of the chat.
-     * @return array The message data.
-     */
-    public function telegramFormat(int|string $chat_id = null): array
+    public function telegramFormat(int|string|null $chat_id = null): array
     {
-        if (is_array($this->format)) {
-            return $this->format;
-        }
-
         if (is_callable($this->format)) {
             return call_user_func($this->format, $chat_id);
+        }
+
+        if ($this->builder) {
+            return $this->builder->telegramFormat($chat_id);
+        }
+
+        if (is_array($this->format)) {
+            return $this->format;
         }
 
         throw new \InvalidArgumentException('Invalid telegram format');
     }
 
-    /**
-     * @return string
-     */
     public function telegramMethod(): string
     {
+        if ($this->builder) {
+            return $this->builder->telegramMethod();
+        }
+
         if (is_string($this->method)) {
             return $this->method;
         }
-
         if ($this->method instanceof TelegramMethod) {
             return $this->method->getMethod();
         }
@@ -90,12 +96,12 @@ class CustomResponse implements ResponseInterface
         throw new \InvalidArgumentException('Invalid telegram method');
     }
 
-    /**
-     * @return array
-     */
     public function httpOptions(): array
     {
+        if ($this->builder) {
+            return $this->builder->httpOptions();
+        }
+
         return $this->options ?? [];
     }
 }
- 

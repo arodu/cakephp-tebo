@@ -5,53 +5,60 @@ declare(strict_types=1);
 namespace TeBo\Response;
 
 use TeBo\Enum\TelegramMethod;
+use TeBo\Telegram\LegacyResponseBuilder;
 use TeBo\Utility\Trait\TextTrait;
 
-class Photo extends AbstractResponse implements ResponseInterface
+/**
+ * @deprecated use \TeBo\Telegram\Response::newPhoto() instead
+ */
+class Photo implements ResponseInterface
 {
     use TextTrait;
 
+    protected LegacyResponseBuilder $builder;
     protected $photo;
-    protected TelegramMethod|string $method = TelegramMethod::SEND_PHOTO;
-    protected array $options = [
-        'parse_mode' => 'HTML',
-    ];
 
     public function __construct($photo = null, string|array|null $caption = null, array $options = [])
     {
-        $this->options = $options;
         if ($photo) {
             $this->addPhoto($photo);
         }
         if ($caption) {
             $this->addText($caption);
         }
-        $this->initialize();
+        
+        $this->builder = LegacyResponseBuilder::newPhoto(string)$this->photo)
+            ->caption((string)$this->getText())
+            ->asHtml(true);
+
+        if (isset($options['reply_markup'])) {
+            $this->builder->setRawReplyKeyboard($options['reply_markup']);
+        }
+        $this->builder->addOptions($options);
     }
 
-    /**
-     * @param string $photo
-     * @return self
-     */
     public function addPhoto($photo): self
     {
         $this->photo = $photo;
-
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    public function telegramMethod(): string
+    {
+        return $this->builder->telegramMethod();
+    }
+
     public function telegramFormat(int|string|null $chat_id = null): array
     {
-        return array_merge(
-            $this->options,
-            [
-                'chat_id' => $chat_id,
-                'photo' => $this->photo,
-                'caption' => $this->getText() ?? null,
-            ]
-        );
+        $this->builder
+            ->photo((string)$this->photo)
+            ->caption((string)$this->getText());
+
+        return $this->builder->telegramFormat($chat_id);
+    }
+
+    public function httpOptions(): array
+    {
+        return $this->builder->httpOptions();
     }
 }

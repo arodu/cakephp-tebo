@@ -7,6 +7,9 @@ namespace TeBo\Response;
 use Cake\Core\InstanceConfigTrait;
 use TeBo\Enum\TelegramMethod;
 
+/**
+ * @deprecated use \TeBo\Telegram\Response::create() instead
+ */
 abstract class AbstractResponse implements ResponseInterface
 {
     use InstanceConfigTrait;

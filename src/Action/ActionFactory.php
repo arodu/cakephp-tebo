@@ -32,9 +32,18 @@ class ActionFactory
         }
 
         if (is_array($action) && $updateType === UpdateType::COMMAND) {
-            $commandsMap = $action;
-            $action = $commandsMap[$update->getCommandName()]
-                ?? $commandsMap['default']
+            $commandMap = $action;
+            $action = $commandMap[$update->getCommandName()]
+                ?? $commandMap['default']
+                ?? $actionsMap['default']
+                ?? null;
+        }
+
+        if (is_array($action) && $updateType === UpdateType::CALLBACK_QUERY) {
+            $actionKey = $update->get('callback_query.data');
+            $callbackQueryMap = $action;
+            $action = $callbackQueryMap[$actionKey]
+                ?? $callbackQueryMap['default']
                 ?? $actionsMap['default']
                 ?? null;
         }
