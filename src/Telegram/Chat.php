@@ -164,25 +164,13 @@ class Chat
         return $this->send($response);
     }
 
-    public function answerCallbackQuery(string $callbackQueryId, ?string $text = null, array $options = []): bool
+    public function answerCallbackQuery(string $callbackQueryId, ?string $text = null): bool
     {
-        $data = [
-            'callback_query_id' => $callbackQueryId,
-        ];
+        $response = Response::create(TelegramMethod::ANSWER_CALLBACK_QUERY)
+            ->text($text)
+            ->data(['callback_query_id' => $callbackQueryId]);
 
-        if ($text !== null) {
-            $data['text'] = $text;
-        }
-
-        $data = array_merge($data, $options);
-
-        $this->lastResult = $this->apiService->call(
-            TelegramMethod::ANSWER_CALLBACK_QUERY,
-            $data,
-            [] // Sin httpOptions especiales
-        );
-
-        return $this->lastResult['ok'] ?? false;
+        return $this->send($response);
     }
 
     /**
