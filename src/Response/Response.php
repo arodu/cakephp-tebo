@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram;
+namespace TeBo\Response;
 
 use TeBo\Enum\TelegramMethod;
 use TeBo\Response\ResponseInterface;

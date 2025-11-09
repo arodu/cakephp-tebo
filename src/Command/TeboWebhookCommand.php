@@ -7,7 +7,8 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use TeBo\Telegram\Api as TelegramApi;
+use TeBo\Enum\TelegramMethod;
+use TeBo\Service\ApiService;
 use TeBo\Utility\Bot;
 
 /**
@@ -34,22 +35,24 @@ class TeboWebhookCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $apiService = new ApiService();
+
         if ($args->getOption('set')) {
             $io->comment('Setting webhook:');
             $url = $args->getOption('url');
             if (empty($url)) {
                 $url = Bot::getWebhookUrl();
             }
-            $this->formatPrint(TelegramApi::setWebhook(['url' => $url]), $io);
+            $this->formatPrint($apiService->call(TelegramMethod::SET_WEBHOOK, ['url' => $url]), $io);
         } elseif ($args->getOption('delete')) {
             $io->comment('Deleting webhook:');
-            $this->formatPrint(TelegramApi::deleteWebhook(), $io);
+            $this->formatPrint($apiService->call(TelegramMethod::DELETE_WEBHOOK), $io);
         } elseif ($args->getOption('info')) {
             $io->comment('Getting webhook info:');
-            $this->formatPrint(TelegramApi::getWebhookInfo(), $io);
+            $this->formatPrint($apiService->call(TelegramMethod::GET_WEBHOOK_INFO), $io);
         } elseif ($args->getOption('bot-info')) {
             $io->comment('Getting bot info (getMe):');
-            $this->formatPrint(TelegramApi::getMe(), $io);
+            $this->formatPrint($apiService->call(TelegramMethod::GET_ME), $io);
         } elseif ($args->getOption('default-url')) {
             $io->comment('Getting default webhook URL:');
             $url = Bot::getWebhookUrl();

@@ -13,7 +13,8 @@ return [
          */
         'telegram' => [
             'token' => env('TELEGRAM_TOKEN', null),
-            'api' => env('TELEGRAM_API', \TeBo\Telegram\Api::API_URL),
+            'api' => env('TELEGRAM_API', \TeBo\Service\ApiService::API_URL),
+            'fileApi' => env('TELEGRAM_FILE_API', \TeBo\Service\ApiService::FILE_API_URL),
         ],
 
         /**
@@ -60,7 +61,7 @@ return [
             /**
              * Example configuration for other actions based on update type
              */
-            //UpdateType::MESSAGE->value => function (\TeBo\Telegram\Update $update) {
+            //UpdateType::MESSAGE->value => function (\TeBo\Dto\Update $update) {
             //    return \App\TeBo\Action\MessageAction::class;
             //},
             //UpdateType::CALLBACK_QUERY->value => \App\TeBo\Action\CallbackQueryAction::class,

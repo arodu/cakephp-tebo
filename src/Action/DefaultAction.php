@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TeBo\Action;
 
 use TeBo\Action\Action;
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
 use TeBo\Utility\Bot;
 
 class DefaultAction extends Action

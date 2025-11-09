@@ -7,7 +7,7 @@ namespace TeBo\Response;
 use TeBo\Utility\Trait\RegisterListTrait;
 
 /**
- * @deprecated use \TeBo\Telegram\Response::newMessage()->setReplyKeyboard(...) instead.
+ * @deprecated use \TeBo\Response\Response::newMessage()->setReplyKeyboard(...) instead.
  */
 class ReplyKeyboard extends HtmlMessage implements ResponseInterface
 {

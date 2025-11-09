@@ -8,7 +8,7 @@ use Cake\Core\InstanceConfigTrait;
 use TeBo\Enum\TelegramMethod;
 
 /**
- * @deprecated use \TeBo\Telegram\Response::create() instead
+ * @deprecated use \TeBo\Response\Response::create() instead
  */
 abstract class AbstractResponse implements ResponseInterface
 {

@@ -9,7 +9,7 @@ use TeBo\Telegram\LegacyResponseBuilder;
 use TeBo\Utility\Trait\TextTrait;
 
 /**
- * @deprecated use \TeBo\Telegram\Response::newPhoto() instead
+ * @deprecated use \TeBo\Response\Response::newPhoto() instead
  */
 class Photo implements ResponseInterface
 {

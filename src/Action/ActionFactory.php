@@ -6,7 +6,7 @@ namespace TeBo\Action;
 
 use Cake\Core\Configure;
 use TeBo\Enum\UpdateType;
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
 
 class ActionFactory
 {

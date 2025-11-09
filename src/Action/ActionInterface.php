@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TeBo\Action;
 
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
 
 interface ActionInterface
 {

@@ -6,7 +6,7 @@ namespace TeBo\Action;
 
 use Cake\Core\InstanceConfigTrait;
 use TeBo\Telegram\Chat;
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
 
 abstract class Action implements ActionInterface
 {

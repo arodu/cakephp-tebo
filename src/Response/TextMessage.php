@@ -8,7 +8,7 @@ use TeBo\Telegram\LegacyResponseBuilder;
 use TeBo\Utility\Trait\TextTrait;
 
 /**
- * @deprecated use \TeBo\Telegram\Response::newMessage()->asHtml(false) instead
+ * @deprecated use \TeBo\Response\Response::newMessage()->asHtml(false) instead
  */
 class TextMessage implements ResponseInterface
 {

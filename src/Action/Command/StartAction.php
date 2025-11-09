@@ -8,7 +8,7 @@ use Cake\Core\Configure;
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;
 use TeBo\Response\TextMessage;
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
 
 class StartAction extends Action
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram;
+namespace TeBo\Response;
 
 use TeBo\Enum\TelegramMethod;
 
 /**
  * Class LegacyResponseBuilder for compatibility with older response builders.
  *
- * @deprecated use \TeBo\Telegram\Response::create() instead
+ * @deprecated use \TeBo\Response\Response::create() instead
  */
 class LegacyResponseBuilder extends Response
 {

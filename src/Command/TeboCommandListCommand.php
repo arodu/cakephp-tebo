@@ -9,7 +9,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use TeBo\Enum\TelegramMethod;
-use TeBo\Telegram\Api as TelegramApi;
+use TeBo\Service\ApiService;
 use TeBo\Utility\Bot;
 
 /**
@@ -73,17 +73,19 @@ class TeboCommandListCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $apiService = new ApiService();
+
         if ($args->getOption('get')) {
-            $data = TelegramApi::call(TelegramMethod::GET_MY_COMMANDS);
+            $data = $apiService->call(TelegramMethod::GET_MY_COMMANDS);
             $this->printCommands($data['result'], $io);
         } elseif ($args->getOption('set')) {
-            $data = TelegramApi::call(TelegramMethod::SET_MY_COMMANDS, ['commands' => json_encode(Bot::getCommandDescriptionList())]);
+            $data = $apiService->call(TelegramMethod::SET_MY_COMMANDS, ['commands' => json_encode(Bot::getCommandDescriptionList())]);
             $this->formatPrint($data, $io);
         } elseif ($args->getOption('build')) {
             $result = Bot::getCommandDescriptionList();
             $this->printCommands($result, $io);
         } elseif ($args->getOption('delete')) {
-            $data = TelegramApi::call(TelegramMethod::DELETE_MY_COMMANDS);
+            $data = $apiService->call(TelegramMethod::DELETE_MY_COMMANDS);
             $this->formatPrint($data, $io);
         } else {
             $io->out($this->getOptionParser()->help());

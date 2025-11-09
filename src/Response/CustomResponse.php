@@ -8,7 +8,7 @@ use TeBo\Enum\TelegramMethod;
 use TeBo\Telegram\LegacyResponseBuilder;
 
 /**
- * @deprecated use \TeBo\Telegram\Response::create() instead
+ * @deprecated use \TeBo\Response\Response::create() instead
  */
 class CustomResponse implements ResponseInterface
 {

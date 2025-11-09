@@ -9,10 +9,11 @@ use Cake\Event\EventManager;
 use Cake\Log\Log;
 use InvalidArgumentException;
 use TeBo\Enum\TelegramMethod;
+use TeBo\Response\Response;
 use TeBo\Response\ResponseInterface;
+use TeBo\Service\ApiService;
 use TeBo\TeBoPlugin;
 use TeBo\Utility\Trait\DataManageTrait;
-use TeBo\Telegram\Api as TelegramApi;
 
 class Chat
 {
@@ -31,13 +32,15 @@ class Chat
 
     protected int $id;
     protected ?array $lastResult = null;
+    protected ApiService $apiService;
 
     /**
      * @param array $chatData
      */
-    public function __construct(array $chatData = [])
+    public function __construct(array $chatData, ApiService $apiService)
     {
         $this->setOriginalData($chatData);
+        $this->apiService = $apiService;
         $this->id = $chatData['id'] ?? null;
         if (empty($this->id)) {
             Log::error('Chat ID is required!', ['config' => $chatData]);
@@ -80,7 +83,7 @@ class Chat
             throw new InvalidArgumentException('Telegram method is required!');
         }
 
-        $this->lastResult = TelegramApi::call(
+        $this->lastResult = $this->apiService->call(
             $method,
             $response->telegramFormat($this->id),
             $response->httpOptions()
@@ -137,7 +140,7 @@ class Chat
      */
     public function downloadFile(string $filePath): string
     {
-        return TelegramApi::downloadFile($filePath);
+        return $this->apiService->downloadFile($filePath);
     }
 
     /**
@@ -146,19 +149,40 @@ class Chat
      * @param string $action The action to send.
      * @return boolean
      * 
-     * @deprecated use \TeBo\Telegram\Response::chatAction() instead
+     * @deprecated use \TeBo\Response\Response::chatAction() instead
      */
     public function chatAction(string $action): bool
     {
         trigger_deprecation(
             'arodu/tebo',
             '2.1.0',
-            'The Chat::chatAction() method is deprecated. Use the TeBo\Telegram\Response::chatAction() method instead.'
+            'The Chat::chatAction() method is deprecated. Use the TeBo\Response\Response::chatAction() method instead.'
         );
 
         $response = Response::chatAction($action);
 
         return $this->send($response);
+    }
+
+    public function answerCallbackQuery(string $callbackQueryId, ?string $text = null, array $options = []): bool
+    {
+        $data = [
+            'callback_query_id' => $callbackQueryId,
+        ];
+
+        if ($text !== null) {
+            $data['text'] = $text;
+        }
+
+        $data = array_merge($data, $options);
+
+        $this->lastResult = $this->apiService->call(
+            TelegramMethod::ANSWER_CALLBACK_QUERY,
+            $data,
+            [] // Sin httpOptions especiales
+        );
+
+        return $this->lastResult['ok'] ?? false;
     }
 
     /**
@@ -167,14 +191,14 @@ class Chat
      * @param array $options
      * @return array
      * 
-     * @deprecated use \TeBo\Telegram\Response and Chat::send() instead
+     * @deprecated use \TeBo\Response\Response and Chat::send() instead
      */
     public function call(TelegramMethod|string $method, array $data = [], array $options = []): array
     {
         trigger_deprecation(
             'arodu/tebo',
             '2.1.0',
-            'The Chat::call() method is deprecated. Use the TeBo\Telegram\Response class and Chat::send() method instead.'
+            'The Chat::call() method is deprecated. Use the TeBo\Response\Response class and Chat::send() method instead.'
         );
 
         $response = Response::create($method)

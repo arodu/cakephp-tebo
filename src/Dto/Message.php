@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Telegram;
+namespace TeBo\Dto;
 
 use TeBo\Enum\MessageType;
 use TeBo\Utility\Trait\DataManageTrait;

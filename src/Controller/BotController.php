@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace TeBo\Controller;
 
-use Cake\Core\Configure;
 use Cake\Log\Log;
 use Exception;
-use PSpell\Config;
 use TeBo\Action\ActionFactory;
 use TeBo\Controller\AppController;
-use TeBo\TeBo\CommandFactory as TeBoCommandFactory;
-use TeBo\Telegram\Update;
+use TeBo\Dto\Update;
+use TeBo\Service\ApiService;
 
 /**
  * Api Controller
@@ -28,7 +26,8 @@ class BotController extends AppController
     public function webhook()
     {
         try {
-            $update = new Update($this->getRequest()->getData());
+            $apiService = new ApiService();
+            $update = new Update($this->getRequest()->getData(), $apiService);
 
             $action = ActionFactory::createOrFail($update);
             $action->execute($update);
