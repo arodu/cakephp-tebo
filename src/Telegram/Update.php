@@ -37,8 +37,6 @@ class Update
             throw new InvalidArgumentException('Update ID is required!');
         }
 
-        Bot::debug('New update received', $updateData);
-
         $event = new Event(TeBoPlugin::EVENT_NEW_UPDATE, $this);
         EventManager::instance()->dispatch($event);
     }

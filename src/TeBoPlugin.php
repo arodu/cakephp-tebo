@@ -9,6 +9,8 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Log\Engine\FileLog;
 use Cake\Log\Log;
@@ -21,6 +23,7 @@ use TeBo\Utility\Bot;
 class TeBoPlugin extends BasePlugin
 {
     public const EVENT_NEW_UPDATE = 'TeBo.newUpdate';
+    public const EVENT_CHAT_RESPONSE = 'TeBo.chatResponse';
 
     public const METHOD_SEND_MESSAGE = 'sendMessage';
     public const METHOD_SEND_PHOTO = 'sendPhoto';
@@ -56,7 +59,32 @@ class TeBoPlugin extends BasePlugin
         }
 
         define('TEBO_CORE_PATH', ROOT . DS . 'vendor' . DS . 'arodu' . DS . 'tebo');
+
+        $this->setEventsDebug();
     }
+
+    /**
+     * Set debug events for TeBo.
+     *
+     * @return void
+     */
+    public function setEventsDebug(): void
+    {
+        if (!Configure::read('debug')) {
+            return;
+        }
+
+        EventManager::instance()->on(self::EVENT_NEW_UPDATE, function (Event $event) {
+            $updateData = $event->getSubject()->getOriginalData();
+            Bot::debug('Update received', $updateData);
+        });
+
+        EventManager::instance()->on(self::EVENT_CHAT_RESPONSE, function (Event $event) {
+            $result = $event->getData('result') ?? [];
+            Bot::debug('Chat response', $result);
+        });
+    }
+
 
     /**
      * Add routes for the plugin.
@@ -69,23 +97,19 @@ class TeBoPlugin extends BasePlugin
      */
     public function routes(RouteBuilder $routes): void
     {
-        $routes->plugin(
-            'TeBo',
-            ['path' => '/tebo'],
-            function (RouteBuilder $builder) {
-                $webhookRoute = '/webhook';
-                $obfuscation = Configure::read('tebo.obfuscation');
-                if (!empty($obfuscation) && is_string($obfuscation)) {
-                    $webhookRoute = '/' . $obfuscation;
-                }
-                $webhookUrl = Configure::read('tebo.webhookUrl');
-                $builder->connect($webhookRoute, [
-                    'plugin' => $webhookUrl['plugin'],
-                    'controller' => $webhookUrl['controller'],
-                    'action' => $webhookUrl['action'],
-                ]);
+        $routes->plugin('TeBo', ['path' => '/tebo'], function (RouteBuilder $builder) {
+            $webhookRoute = '/webhook';
+            $obfuscation = Configure::read('tebo.obfuscation');
+            if (!empty($obfuscation) && is_string($obfuscation)) {
+                $webhookRoute = '/' . $obfuscation;
             }
-        );
+            $webhookUrl = Configure::read('tebo.webhookUrl');
+            $builder->connect($webhookRoute, [
+                'plugin' => $webhookUrl['plugin'],
+                'controller' => $webhookUrl['controller'],
+                'action' => $webhookUrl['action'],
+            ]);
+        });
 
         parent::routes($routes);
     }

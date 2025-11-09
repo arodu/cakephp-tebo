@@ -11,7 +11,7 @@ class Response implements ResponseInterface
 {
     protected TelegramMethod|string $method;
     protected array $data = [];
-    protected array $options = []; // Para httpOptions
+    protected array $httpOptions = []; // Para httpOptions
 
     protected function __construct(TelegramMethod|string $method)
     {
@@ -28,10 +28,10 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param string $text Texto inicial (opcional).
+     * @param array|string $text Texto inicial (opcional).
      * @return self
      */
-    public static function newMessage(string $text = ''): self
+    public static function newMessage(array|string $text = ''): self
     {
         return static::create(TelegramMethod::SEND_MESSAGE)
             ->asHtml()
@@ -68,8 +68,34 @@ class Response implements ResponseInterface
             ->photo($photo);
     }
 
-    public function text(string $text): self
+    public static function chatAction(string $action): self
     {
+        return static::create(TelegramMethod::SEND_CHAT_ACTION)
+            ->data(['action' => $action]);
+    }
+
+    // Fluent setters
+
+    public function data(array $data): self
+    {
+        $this->data = array_merge($this->data, $data);
+
+        return $this;
+    }
+
+    public function setHttpOptions(array $httpOptions): self
+    {
+        $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
+
+        return $this;
+    }
+
+    public function text(array|string $text): self
+    {
+        if (is_array($text)) {
+            $text = implode(PHP_EOL, $text);
+        }
+
         $this->data['text'] = $text;
 
         return $this;
@@ -122,6 +148,27 @@ class Response implements ResponseInterface
         return $this;
     }
 
+    /**
+     * @param boolean $force
+     * @param boolean $selective
+     * @param string $placeholder
+     * @return self
+     */
+    public function setForceReply(bool $force = true, bool $selective = true, string $placeholder = ''): self
+    {
+        $this->data['reply_markup'] = [
+            'force_reply' => $force,
+            'selective' => $selective,
+        ];
+
+        if (!empty($placeholder)) {
+            $this->data['reply_markup']['input_field_placeholder'] = $placeholder;
+        }
+        return $this;
+    }
+
+    // ResponseInterface methods
+
     public function telegramMethod(): string
     {
         if ($this->method instanceof TelegramMethod) {
@@ -138,6 +185,6 @@ class Response implements ResponseInterface
 
     public function httpOptions(): array
     {
-        return $this->options;
+        return $this->httpOptions;
     }
 }
