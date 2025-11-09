@@ -21,15 +21,17 @@ trait FormatPrintTrait
         }
 
         $io->success('Success');
+
         if (is_array($data['result'])) {
             foreach ($data['result'] as $key => $value) {
                 if (is_bool($value)) {
-                    $value = $value ? 'true' : 'false';
+                    $value = $value ? '<success>true</success>' : '<warning>false</warning>';
                 }
-                $io->out($key . ': ' . $value);
+
+                $io->out("  <info>" . $key . "</info>" . ': ' . $value);
             }
         } elseif (isset($data['description'])) {
-            $io->out($data['description']);
+            $io->out("  " . $data['description']);
         }
     }
 }

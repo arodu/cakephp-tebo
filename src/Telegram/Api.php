@@ -38,6 +38,7 @@ use TeBo\Enum\TelegramMethod;
  * @method static array kickChatMember(array $data = [], array $options = [])
  * @method static array unbanChatMember(array $data = [], array $options = [])
  * @method static array restrictChatMember(array $data = [], array $options = [])
+ * @method static array setWebhook(array $data = [], array $options = [])
  */
 class Api
 {

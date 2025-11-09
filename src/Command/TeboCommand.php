@@ -26,6 +26,8 @@ class TeboCommand extends Command
     {
         $parser = parent::buildOptionParser($parser);
 
+        $parser->setDescription('Provides an interactive menu for Tebo webhook management.');
+
         return $parser;
     }
 
@@ -39,31 +41,41 @@ class TeboCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $options = [
-            '1' => 'Get Webhook URL',
-            '2' => 'Set Webhook to telegram',
-            '3' => 'Delete Webhook from telegram',
-            '4' => 'Get Webhook info from telegram',
-            '5' => 'Get bot info',
-            'h' => 'Help',
+            '1' => 'Show Default Webhook URL',
+            '2' => 'Set Webhook',
+            '3' => 'Delete Webhook',
+            '4' => 'Get Webhook Info',
+            '5' => 'Get Bot Info',
             'q' => 'Quit',
         ];
-
-        $io->out('<info>TeBo Commands</info>');
-        $io->hr();
-        foreach ($options as $key => $option) {
-            $io->out("[$key] $option");
-        }
-
+        $choice = null;
         do {
-            $choice = strtolower($io->askChoice('What would you like to do?', array_keys($options), 'h'));
+
+            $io->out('<info>TeBo Interactive Menu</info>');
+            $io->hr();
+            foreach ($options as $key => $option) {
+                $io->out("  <info>[$key]</info> $option");
+            }
+            $io->hr();
+
+            $choice = strtolower($io->askChoice(
+                'Select an option:',
+                array_keys($options)
+            ));
+
             $code = null;
+            $io->out('');
+
             switch ($choice) {
                 case '1':
-                    $io->success(Bot::getWebhookUrl());
+                    $code = $this->executeCommand(TeboWebhookCommand::class, ['--default-url'], $io);
                     break;
 
                 case '2':
-                    $code = $this->executeCommand(TeboWebhookCommand::class, ['--set'], $io);
+                    $defaultUrl = Bot::getWebhookUrl();
+                    $io->out('');
+                    $url = $io->ask('Enter the webhook URL (press Enter to use the default)', $defaultUrl);
+                    $code = $this->executeCommand(TeboWebhookCommand::class, ['--set', '--url', $url], $io);
                     break;
 
                 case '3':
@@ -78,26 +90,21 @@ class TeboCommand extends Command
                     $code = $this->executeCommand(TeboWebhookCommand::class, ['--bot-info'], $io);
                     break;
 
-                case 'h':
-                case 'H':
-                    $io->out($this->getOptionParser()->help());
-                    break;
                 case 'q':
-                case 'Q':
-                    // Do nothing
+                    $io->success('Exiting...');
                     break;
-                default:
-                    $io->err(
-                        'You have made an invalid selection. '
-                            . 'Please choose a command from the list.'
-                            . PHP_EOL
-                            . 'Type "h" for help or "q" to quit.'
-                    );
             }
+
             if ($code === static::CODE_ERROR) {
+                $io->error('The sub-command failed. Aborting.');
                 $this->abort();
             }
-        } while ($choice !== 'q' && $choice !== 'Q');
+
+            if ($choice !== 'q') {
+                $io->out('');
+                $io->ask('Press Enter to continue...');
+            }
+        } while ($choice !== 'q');
 
         return static::CODE_SUCCESS;
     }
