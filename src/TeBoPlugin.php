@@ -75,13 +75,23 @@ class TeBoPlugin extends BasePlugin
         }
 
         EventManager::instance()->on(self::EVENT_NEW_UPDATE, function (Event $event) {
-            $updateData = $event->getSubject()->getOriginalData();
-            Bot::debug('Update received', $updateData);
+            /** @var \TeBo\Dto\Update $update */
+            $update = $event->getSubject();
+            Bot::debug('Update received [' . $update->getType()->value . ']', $update->getOriginalData());
         });
 
         EventManager::instance()->on(self::EVENT_CHAT_RESPONSE, function (Event $event) {
+            /** @var \TeBo\Response\ResponseInterface $response */
+            $response = $event->getData('response');
             $result = $event->getData('result') ?? [];
-            Bot::debug('Chat response', $result);
+
+            $telegramMethod = $response->telegramMethod();
+            if ($telegramMethod == 'sendChatAction') {
+                $data = $response->telegramFormat();
+                $telegramMethod .= '/' . ($data['action'] ?? '');
+            }
+
+            Bot::debug('Chat response [' . $telegramMethod . ']', $result);
         });
     }
 
