@@ -42,6 +42,7 @@ use TeBo\Enum\TelegramMethod;
 class Api
 {
     const API_URL = 'https://api.telegram.org/bot:token/:method';
+    const FILE_API_URL = 'https://api.telegram.org/file/bot:token/:file_path';
 
     /**
      * Call telegram api
@@ -65,6 +66,11 @@ class Api
             'token' => $telegram['token'],
             'method' => $method->getMethod(),
         ]);
+
+        if (isset($data['reply_markup']) && is_array($data['reply_markup'])) {
+            $data['reply_markup'] = json_encode($data['reply_markup']);
+        }
+
         $response = $http->post($url, $data, $options);
 
         return $response->getJson();
@@ -90,10 +96,13 @@ class Api
             throw new \RuntimeException('Telegram configuration not found');
         }
 
-        $downloadUrl = "https://api.telegram.org/file/bot{$telegram['token']}/{$filePath}";
+        $url = Text::insert($telegram['fileApi'] ?? static::FILE_API_URL, [
+            'token' => $telegram['token'],
+            'file_path' => $filePath,
+        ]);
 
         $http = new Client();
-        $response = $http->get($downloadUrl);
+        $response = $http->get($url);
 
         if (!$response->isOk()) {
             throw new \Exception('Falló la descarga del archivo de Telegram.');

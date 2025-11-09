@@ -85,7 +85,7 @@ class Response implements ResponseInterface
     {
         $this->data['photo'] = $fileIdOrUrl;
         return $this;
-    }u
+    }
 
     public function messageId(int $messageId): self
     {
@@ -103,7 +103,7 @@ class Response implements ResponseInterface
 
     public function removeKeyboard(): self
     {
-        $this->data['reply_markup'] = [];
+        $this->data['reply_markup'] = ['inline_keyboard' => []];
 
         return $this;
     }
@@ -111,6 +111,13 @@ class Response implements ResponseInterface
     public function setInlineKeyboard(array $inlineKeyboardRows): self
     {
         $this->data['reply_markup'] = ['inline_keyboard' => $inlineKeyboardRows];
+
+        return $this;
+    }
+
+    public function replyToMessageId(int $messageId): self
+    {
+        $this->data['reply_to_message_id'] = $messageId;
 
         return $this;
     }
