@@ -138,8 +138,16 @@ class Chat
      * @param string $filePath
      * @return string
      */
-    public function downloadFile(string $filePath): string
+    public function downloadFile(string $fileId): string
     {
+        $response = Response::create(TelegramMethod::GET_FILE)->data(['file_id' => $fileId]);
+        $result = $this->send($response);
+        $filePath = $result['result']['file_path'] ?? null;
+
+        if (!$filePath) {
+            throw new \Exception(__('Could not get file_path from Telegram.'));
+        }
+
         return $this->apiService->downloadFile($filePath);
     }
 

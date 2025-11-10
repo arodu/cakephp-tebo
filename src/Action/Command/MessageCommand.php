@@ -7,7 +7,7 @@ namespace TeBo\Action\Command;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Utility\Hash;
 use TeBo\Enum\MessageType;
-use TeBo\Telegram\Message;
+use TeBo\Dto\Message;
 
 class MessageCommand
 {

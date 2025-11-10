@@ -104,7 +104,7 @@ class ApiService
         $response = $http->get($url);
 
         if (!$response->isOk()) {
-            throw new \Exception('Falló la descarga del archivo de Telegram.');
+            throw new \Exception(__('Could not download file from Telegram.'));
         }
 
         return $response->getBody()->getContents();

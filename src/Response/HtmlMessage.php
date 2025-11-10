@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TeBo\Response;
 
 use TeBo\Enum\TelegramMethod;
-use TeBo\Telegram\LegacyResponseBuilder;
+use TeBo\Response\LegacyResponseBuilder;
 
 /**
  * @deprecated Esta clase está obsoleta. 
