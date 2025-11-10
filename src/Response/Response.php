@@ -81,7 +81,17 @@ class Response implements ResponseInterface
             ->setData(['action' => $action]);
     }
 
-    // Fluent setters
+    /**
+     * @param int $messageId
+     * @return self
+     */
+    public static function deleteMessage(int $messageId): self
+    {
+        return static::create(TelegramMethod::DELETE_MESSAGE)
+            ->messageId($messageId);
+    }
+
+    // Fluent setters1
 
     /**
      * @param array $data
@@ -101,6 +111,17 @@ class Response implements ResponseInterface
     public function setHttpOptions(array $httpOptions): self
     {
         $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
+
+        return $this;
+    }
+
+    /**
+     * @param int $messageId
+     * @return self
+     */
+    public function messageId(int $messageId): self
+    {
+        $this->data['message_id'] = $messageId;
 
         return $this;
     }

@@ -18,6 +18,7 @@ enum TelegramMethod: string
     case SEND_VIDEO_NOTE = 'sendVideoNote';
     case SEND_MEDIA_GROUP = 'sendMediaGroup';
     case SEND_LOCATION = 'sendLocation';
+    case DELETE_MESSAGE = 'deleteMessage';
     case EDIT_MESSAGE_LIVE_LOCATION = 'editMessageLiveLocation';
     case STOP_MESSAGE_LIVE_LOCATION = 'stopMessageLiveLocation';
     case SEND_VENUE = 'sendVenue';

@@ -129,7 +129,7 @@ class Chat
      */
     public function chatActionTyping(): bool
     {
-        $response = Response::chatAction(self::CHAT_ACTION_TYPING);
+        $response = Response::newChatAction(self::CHAT_ACTION_TYPING);
 
         return $this->send($response);
     }
@@ -140,8 +140,9 @@ class Chat
      */
     public function downloadFile(string $fileId): string
     {
-        $response = Response::create(TelegramMethod::GET_FILE)->data(['file_id' => $fileId]);
-        $result = $this->send($response);
+        $response = Response::create(TelegramMethod::GET_FILE)->setData(['file_id' => $fileId]);
+        $this->send($response);
+        $result = $this->getLastResult();
         $filePath = $result['result']['file_path'] ?? null;
 
         if (!$filePath) {
@@ -167,7 +168,7 @@ class Chat
             'The Chat::chatAction() method is deprecated. Use the TeBo\Response\Response::chatAction() method instead.'
         );
 
-        $response = Response::chatAction($action);
+        $response = Response::newChatAction($action);
 
         return $this->send($response);
     }
@@ -175,8 +176,8 @@ class Chat
     public function answerCallbackQuery(string $callbackQueryId, ?string $text = null): bool
     {
         $response = Response::create(TelegramMethod::ANSWER_CALLBACK_QUERY)
-            ->text($text)
-            ->data(['callback_query_id' => $callbackQueryId]);
+            ->setText($text)
+            ->setData(['callback_query_id' => $callbackQueryId]);
 
         return $this->send($response);
     }
@@ -198,7 +199,7 @@ class Chat
         );
 
         $response = Response::create($method)
-            ->data($data)
+            ->setData($data)
             ->setHttpOptions($options);
         $this->send($response);
 
