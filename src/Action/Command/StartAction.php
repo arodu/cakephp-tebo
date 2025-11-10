@@ -8,7 +8,6 @@ use Cake\Core\Configure;
 use TeBo\Action\Action;
 use TeBo\Response\HtmlMessage;
 use TeBo\Response\TextMessage;
-use TeBo\Dto\Update;
 
 class StartAction extends Action
 {

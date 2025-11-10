@@ -11,7 +11,7 @@ class Response implements ResponseInterface
 {
     protected TelegramMethod|string $method;
     protected array $data = [];
-    protected array $httpOptions = []; // Para httpOptions
+    protected array $httpOptions = [];
 
     protected function __construct(TelegramMethod|string $method)
     {
@@ -35,7 +35,7 @@ class Response implements ResponseInterface
     {
         return static::create(TelegramMethod::SEND_MESSAGE)
             ->asHtml()
-            ->text($text);
+            ->setText($text);
     }
 
     /**
@@ -46,7 +46,7 @@ class Response implements ResponseInterface
     {
         return static::create(TelegramMethod::EDIT_MESSAGE_TEXT)
             ->asHtml()
-            ->messageId($messageId);
+            ->setMessageId($messageId);
     }
 
 
@@ -57,32 +57,47 @@ class Response implements ResponseInterface
     public static function editKeyboard(int $messageId): self
     {
         return static::create(TelegramMethod::EDIT_MESSAGE_REPLY_MARKUP)
-            ->messageId($messageId);
+            ->setMessageId($messageId);
     }
 
-
+    /**
+     * @param string $photo
+     * @return self
+     */
     public static function newPhoto(string $photo): self
     {
         return static::create(TelegramMethod::SEND_PHOTO)
             ->asHtml()
-            ->photo($photo);
+            ->setPhoto($photo);
     }
 
-    public static function chatAction(string $action): self
+    /**
+     * @param string $action
+     * @return self
+     */
+    public static function newChatAction(string $action): self
     {
         return static::create(TelegramMethod::SEND_CHAT_ACTION)
-            ->data(['action' => $action]);
+            ->setData(['action' => $action]);
     }
 
     // Fluent setters
 
-    public function data(array $data): self
+    /**
+     * @param array $data
+     * @return self
+     */
+    public function setData(array $data): self
     {
         $this->data = array_merge($this->data, $data);
 
         return $this;
     }
 
+    /**
+     * @param array $httpOptions
+     * @return self
+     */
     public function setHttpOptions(array $httpOptions): self
     {
         $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
@@ -90,30 +105,49 @@ class Response implements ResponseInterface
         return $this;
     }
 
-    public function text(array|string $text): self
+    /**
+     * @param array|string $text
+     * @return self
+     */
+    public function setText(array|string $text): self
     {
-        if (is_array($text)) {
-            $text = implode(PHP_EOL, $text);
-        }
-
-        $this->data['text'] = $text;
+        $this->data['text'] = is_string($text) ? [$text] : $text;
 
         return $this;
     }
 
-    public function caption(string $caption): self
+    public function addText(array|string $text): self
+    {
+        if (!isset($this->data['text']) || !is_array($this->data['text'])) {
+            $this->data['text'] = [];
+        }
+
+        if (is_string($text)) {
+            $this->data['text'][] = $text;
+        } else {
+            $this->data['text'] = array_merge($this->data['text'], $text);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $caption
+     * @return self
+     */
+    public function setCaption(string $caption): self
     {
         $this->data['caption'] = $caption;
         return $this;
     }
 
-    public function photo(string $fileIdOrUrl): self
+    public function setPhoto(string $fileIdOrUrl): self
     {
         $this->data['photo'] = $fileIdOrUrl;
         return $this;
     }
 
-    public function messageId(int $messageId): self
+    public function setMessageId(int $messageId): self
     {
         $this->data['message_id'] = $messageId;
 
@@ -141,7 +175,7 @@ class Response implements ResponseInterface
         return $this;
     }
 
-    public function replyToMessageId(int $messageId): self
+    public function setReplyToMessageId(int $messageId): self
     {
         $this->data['reply_to_message_id'] = $messageId;
 
@@ -169,6 +203,9 @@ class Response implements ResponseInterface
 
     // ResponseInterface methods
 
+    /**
+     * @return string
+     */
     public function telegramMethod(): string
     {
         if ($this->method instanceof TelegramMethod) {
@@ -178,13 +215,26 @@ class Response implements ResponseInterface
         return $this->method;
     }
 
+    /**
+     * @param int|string|null $chat_id
+     * @return array
+     */
     public function telegramFormat(int|string|null $chat_id = null): array
     {
-        return array_merge(['chat_id' => $chat_id], $this->data);
+        $data = array_merge(['chat_id' => $chat_id], $this->data);
+
+        if (!empty($data['text']) && is_array($data['text'])) {
+            $data['text'] = implode(PHP_EOL, $data['text']);
+        }
+
+        return $data;
     }
 
+    /**
+     * @return array
+     */
     public function httpOptions(): array
     {
-        return $this->httpOptions;
+        return $this->httpOptions ?? [];
     }
 }

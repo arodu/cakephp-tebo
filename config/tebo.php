@@ -39,15 +39,19 @@ return [
          * - A string to use as a secret key for obfuscation.
          */
         'obfuscation' => env('WEBHOOK_OBFUSCATION', null),
-        'actions' => [
 
+
+        /**
+         * Configured actions:
+         * Defines the actions to execute based on the update type.
+         * - Key is the update type (UpdateType).
+         * - Value can be a class name, callable function, or an array of commands.
+         * - For commands, the key is the command name, and the value is the corresponding class name.
+         * - If no specific key is found, the default action will be executed.
+         */
+        'actions' => [
             /**
-             * Configured actions:
-             * Defines the actions to execute based on the update type.
-             * - Key is the update type (UpdateType).
-             * - Value can be a class name, callable function, or an array of commands.
-             * - For commands, the key is the command name, and the value is the corresponding class name.
-             * - If no specific key is found, the default action will be executed.
+             * Example configuration for command actions
              */
             UpdateType::COMMAND->value => [
                 'start' => \TeBo\Action\Command\StartAction::class,  // Action for the '/start' command.
@@ -55,7 +59,17 @@ return [
                 'help' => \TeBo\Action\Command\HelpAction::class,    // Action for the '/help' command.
                 //'hello' => \TeBo\Action\HelloAction::class,
                 //'example' => \TeBo\Action\ExampleAction::class,
-                'default' => \TeBo\Action\Command\NotFoundAction::class,  // Default action if no match is found.
+                'default' => \TeBo\Action\NotFoundAction::class,  // Default action if no match is found.
+            ],
+
+            /**
+             * Example configuration for callback query actions
+             */
+            UpdateType::CALLBACK_QUERY->value => [
+                //'confirm' => \App\Action\CallbackQuery\ConfirmAction::class,  // Action for 'confirm' callback query.
+                //'cancel' => \App\Action\CallbackQuery\CancelAction::class, // Action for 'cancel' callback query.
+
+                'default' => \TeBo\Action\NotFoundAction::class,  // Default action if no match is found.
             ],
 
             /**
@@ -64,7 +78,6 @@ return [
             //UpdateType::MESSAGE->value => function (\TeBo\Dto\Update $update) {
             //    return \App\TeBo\Action\MessageAction::class;
             //},
-            //UpdateType::CALLBACK_QUERY->value => \App\TeBo\Action\CallbackQueryAction::class,
             //UpdateType::INLINE_QUERY->value => \App\TeBo\Action\InlineQueryAction::class,
             //UpdateType::CHOSEN_INLINE_RESULT->value => \App\TeBo\Action\ChosenInlineResultAction::class,
             //UpdateType::EDITED_MESSAGE->value => \App\TeBo\Action\EditedMessageAction::class,

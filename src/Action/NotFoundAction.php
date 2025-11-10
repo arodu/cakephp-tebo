@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TeBo\Action\Command;
+namespace TeBo\Action;
 
 use Cake\Core\Configure;
 use Cake\Log\Log;
