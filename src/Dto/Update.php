@@ -23,10 +23,13 @@ class Update
 
     protected string|int $updateId;
     protected ApiService $apiService;
+
     protected Chat $chat;
     protected Message $message;
-    protected UpdateType $type;
+    protected User $user;
     protected ?CallbackQuery $callbackQuery = null;
+
+    protected UpdateType $type;
 
     /**
      * @param array $updateData
@@ -75,13 +78,30 @@ class Update
         return $this->message;
     }
 
-    public function getCallbackQuery(): CallbackQuery
+    /**
+     * @return \TeBo\Dto\User The user object.
+     */
+    public function getUser(): User
+    {
+        if (empty($this->user)) {
+            $path = $this->getType()->getUserPath();
+            $userData = Hash::get($this->getOriginalData(), $path);
+            $this->user = new User($userData);
+        }
+
+        return $this->user;
+    }
+
+    /**
+     * @return \TeBo\Dto\CallbackQuery The callback query object.
+     */
+    public function getCallbackQuery(): ?CallbackQuery
     {
         if (empty($this->callbackQuery)) {
             $callbackData = Hash::get($this->getOriginalData(), 'callback_query');
             
             if (empty($callbackData)) {
-                throw new \RuntimeException('Se intentó acceder a callback_query, pero no existe en este Update.');
+                return null;
             }
 
             $this->callbackQuery = new CallbackQuery($callbackData);
@@ -90,6 +110,9 @@ class Update
         return $this->callbackQuery;
     }
 
+    /**
+     * @return UpdateType The update type.
+     */
     public function getType(): UpdateType
     {
         if (empty($this->type)) {
@@ -110,6 +133,11 @@ class Update
         return $this->getChat()->send($response);
     }
 
+    /**
+     * Get the command name if the update is a command.
+     * 
+     * @return string|null
+     */
     public function getCommandName(): ?string
     {
         $commandMessage = new MessageCommand($this->getMessage());

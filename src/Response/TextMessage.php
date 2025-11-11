@@ -36,7 +36,7 @@ class TextMessage implements ResponseInterface
 
     public function telegramFormat(int|string|null $chat_id = null): array
     {
-        $this->builder->text((string)$this->getText());
+        $this->builder->setText((string)$this->getText());
 
         return $this->builder->telegramFormat($chat_id);
     }

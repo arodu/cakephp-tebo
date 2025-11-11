@@ -64,6 +64,26 @@ enum UpdateType: string
         };
     }
 
+    public function getUserPath(): string
+    {
+        return match ($this) {
+            self::REPLY,
+            self::MESSAGE,
+            self::COMMAND => 'message.from',
+            self::EDITED_MESSAGE => 'edited_message.from',
+            self::CHANNEL_POST => 'channel_post.from',
+            self::EDITED_CHANNEL_POST => 'edited_channel_post.from',
+            self::INLINE_QUERY => 'inline_query.from',
+            self::CHOSEN_INLINE_RESULT => 'chosen_inline_result.from',
+            self::CALLBACK_QUERY => 'callback_query.from',
+            self::SHIPPING_QUERY => 'shipping_query.from',
+            self::PRE_CHECKOUT_QUERY => 'pre_checkout_query.from',
+            self::POLL => 'poll.from',
+            self::POLL_ANSWER => 'poll_answer.user',
+            default => throw new \InvalidArgumentException('Invalid update type'),
+        };
+    }
+
     public function getMessagePath(): string
     {
         return match ($this) {

@@ -7,6 +7,7 @@ namespace TeBo\Action;
 use Cake\Core\InstanceConfigTrait;
 use TeBo\Telegram\Chat;
 use TeBo\Dto\Update;
+use TeBo\Dto\User;
 
 abstract class Action implements ActionInterface
 {
@@ -15,6 +16,7 @@ abstract class Action implements ActionInterface
     protected array $_defaultConfig = [];
     protected ?Update $update;
     protected ?Chat $chat;
+    protected ?User $user;
 
     /**
      * Action constructor.
@@ -74,6 +76,15 @@ abstract class Action implements ActionInterface
         }
 
         return $this->chat;
+    }
+
+    public function getUser(): User
+    {
+        if (empty($this->user)) {
+            $this->user = $this->getUpdate()->getUser();
+        }
+
+        return $this->user;
     }
 
     /**

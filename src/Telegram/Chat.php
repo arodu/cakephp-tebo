@@ -176,8 +176,11 @@ class Chat
     public function answerCallbackQuery(string $callbackQueryId, ?string $text = null): bool
     {
         $response = Response::create(TelegramMethod::ANSWER_CALLBACK_QUERY)
-            ->setText($text)
             ->setData(['callback_query_id' => $callbackQueryId]);
+
+        if ($text !== null) {
+            $response->setText($text);
+        }
 
         return $this->send($response);
     }
