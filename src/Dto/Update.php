@@ -97,11 +97,15 @@ class Update
      */
     public function getCallbackQuery(): ?CallbackQuery
     {
+        if ($this->getType() !== UpdateType::CALLBACK_QUERY) {
+            return null;
+        }
+
         if (empty($this->callbackQuery)) {
             $callbackData = Hash::get($this->getOriginalData(), 'callback_query');
             
             if (empty($callbackData)) {
-                return null;
+                throw new InvalidArgumentException('Callback query data is required for CALLBACK_QUERY updates.');
             }
 
             $this->callbackQuery = new CallbackQuery($callbackData);

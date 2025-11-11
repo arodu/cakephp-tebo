@@ -24,7 +24,9 @@ abstract class Action implements ActionInterface
     public function __construct(?Update $update = null, array $config = [])
     {
         $this->setConfig($config);
-        $this->setUpdate($update);
+        if (!empty($update)) {
+            $this->setUpdate($update);
+        }
         $this->initialize();
     }
 
@@ -38,11 +40,13 @@ abstract class Action implements ActionInterface
 
     /**
      * @param Update $update
-     * @return void
+     * @return self
      */
-    public function setUpdate(?Update $update): void
+    public function setUpdate(Update $update): self
     {
         $this->update = $update;
+
+        return $this;
     }
 
     /**
@@ -59,11 +63,13 @@ abstract class Action implements ActionInterface
 
     /**
      * @param Chat $chat
-     * @return void
+     * @return self
      */
-    public function setChat(Chat $chat): void
+    public function setChat(Chat $chat): self
     {
         $this->chat = $chat;
+
+        return $this;
     }
 
     /**
@@ -72,16 +78,30 @@ abstract class Action implements ActionInterface
     public function getChat(): Chat
     {
         if (empty($this->chat)) {
-            $this->chat = $this->getUpdate()->getChat();
+            $this->chat = $this->getUpdate()?->getChat();
         }
 
         return $this->chat;
     }
 
+    /**
+     * @param User $user
+     * @return self
+     */
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
     public function getUser(): User
     {
         if (empty($this->user)) {
-            $this->user = $this->getUpdate()->getUser();
+            $this->user = $this->getUpdate()?->getUser();
         }
 
         return $this->user;

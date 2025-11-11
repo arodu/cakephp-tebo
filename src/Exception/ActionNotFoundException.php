@@ -6,7 +6,7 @@ namespace TeBo\Exception;
 use Cake\Http\Exception\NotFoundException;
 use Throwable;
 
-class CommandNotFoundException extends NotFoundException
+class ActionNotFoundException extends NotFoundException
 {
     /**
      * @inheritDoc
@@ -23,7 +23,7 @@ class CommandNotFoundException extends NotFoundException
     public function __construct(?string $message = null, ?int $code = null, ?Throwable $previous = null)
     {
         if (!$message) {
-            $message = 'Command Not Found';
+            $message = 'Action Not Found';
         }
         parent::__construct($message, $code, $previous);
     }

@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace TeBo\Controller;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Exception;
 use TeBo\Action\ActionFactory;
 use TeBo\Controller\AppController;
 use TeBo\Dto\Update;
 use TeBo\Service\ApiService;
+use TeBo\TeBoPlugin;
 
 /**
- * Api Controller
- *
- * @method \TeBo\Model\Entity\Api[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * Bot Controller
  */
 class BotController extends AppController
 {
@@ -30,11 +31,20 @@ class BotController extends AppController
             $update = new Update($this->getRequest()->getData(), $apiService);
 
             $action = ActionFactory::createOrFail($update);
-            $action->execute($update);
+
+            $event = new Event(TeBoPlugin::EVENT_BEFORE_ACTION, $this, ['action' => $action, 'update' => $update]);
+            EventManager::instance()->dispatch($event);
+
+            if (!$event->isStopped()) {
+                $action->execute();
+
+                $event = new Event(TeBoPlugin::EVENT_AFTER_ACTION, $this, ['action' => $action, 'update' => $update]);
+                EventManager::instance()->dispatch($event);
+            }
 
             return $this->response->withStatus(200);
         } catch (Exception $e) {
-            Log::error($e->getMessage() . ': with update: ' . json_encode($update->getOriginalData()));
+            Log::error($e->getMessage() . ': with update: ' . json_encode($update->getOriginalData()), ['exception' => $e]);
 
             return $this->response->withStatus(200);
         }

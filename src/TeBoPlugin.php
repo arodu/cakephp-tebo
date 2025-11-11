@@ -24,10 +24,9 @@ class TeBoPlugin extends BasePlugin
 {
     public const EVENT_NEW_UPDATE = 'TeBo.newUpdate';
     public const EVENT_CHAT_RESPONSE = 'TeBo.chatResponse';
-
-    public const METHOD_SEND_MESSAGE = 'sendMessage';
-    public const METHOD_SEND_PHOTO = 'sendPhoto';
-    public const METHOD_SEND_VIDEO = 'sendVideo';
+    public const EVENT_BEFORE_ACTION = 'TeBo.beforeAction';
+    public const EVENT_AFTER_ACTION = 'TeBo.afterAction';
+    public const EVENT_ACTION_NOT_FOUND = 'TeBo.actionNotFound';
 
     /**
      * Load all the plugin configuration and bootstrap logic.
@@ -115,9 +114,9 @@ class TeBoPlugin extends BasePlugin
             }
             $webhookUrl = Configure::read('tebo.webhookUrl');
             $builder->connect($webhookRoute, [
-                'plugin' => $webhookUrl['plugin'],
-                'controller' => $webhookUrl['controller'],
-                'action' => $webhookUrl['action'],
+                'plugin' => $webhookUrl['plugin'] ?? 'TeBo',
+                'controller' => $webhookUrl['controller'] ?? 'Bot',
+                'action' => $webhookUrl['action'] ?? 'webhook',
             ]);
         });
 
