@@ -53,10 +53,6 @@ export WEBHOOK_BASE="your_base_url_here"
 - **WEBHOOK_OBFUSCATION**: Obfuscates the webhook URL, adding an additional security layer.
 - **WEBHOOK_BASE**: Sets the base domain for the webhook URL. If not specified, `127.0.0.1` is used, which is incompatible with the Telegram API.
 
-Here's the translated version of the section:
-
----
-
 ### Configuring CSRF Protection
 
 CakePHP includes built-in protection against Cross-Site Request Forgery (CSRF) attacks. However, to allow Telegram webhooks to work properly with TeBo, you need to exclude requests coming from the plugin from this protection.
