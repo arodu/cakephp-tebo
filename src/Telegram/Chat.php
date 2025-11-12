@@ -105,7 +105,9 @@ class Chat
      */
     public function sendHtml(string|array $html, array $options = []): bool
     {
-        $response = Response::newMessage($html)->asHtml();
+        $response = Response::newMessage($html)
+            ->setHttpOptions($options)
+            ->asHtml();
 
         return $this->send($response);
     }
