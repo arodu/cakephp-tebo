@@ -22,7 +22,6 @@ class DefaultAction extends Action
 
         $this->getChat()->sendHtml([
             'Default action executed.',
-            'Update ID: ' . $this->getUpdate()->getUpdateId(),
             '',
             'You can customize this action by creating your own action class that extends \TeBo\Action\Action and overrides the execute() method.',
         ]);

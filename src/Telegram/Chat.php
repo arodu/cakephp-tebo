@@ -41,7 +41,7 @@ class Chat
     {
         $this->setOriginalData($chatData);
         $this->apiService = $apiService;
-        $this->id = $chatData['id'] ?? null;
+        $this->id = $this->get('id');
         if (empty($this->id)) {
             Log::error('Chat ID is required!', ['config' => $chatData]);
             throw new InvalidArgumentException('Chat ID is required!');
@@ -69,6 +69,24 @@ class Chat
     public function getType(): string
     {
         return $this->get('type') ?? '';
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        if ($this->getType() === 'private') {
+            $firstName = $this->get('first_name') ?? '';
+            $lastName = $this->get('last_name') ?? '';
+            return trim($firstName . ' ' . $lastName);
+        }
+
+        if ($this->getType() === 'group' || $this->getType() === 'supergroup') {
+            return $this->get('title') ?? null;
+        }
+
+        return null;
     }
 
     /**
