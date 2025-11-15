@@ -9,7 +9,9 @@ use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
-use TeBo\Action\Command\MessageCommand;
+use TeBo\Dto\Message\Command;
+use TeBo\Dto\Message\Document;
+use TeBo\Dto\Message\Photo;
 use TeBo\TeBoPlugin;
 use TeBo\Enum\UpdateType;
 use TeBo\Response\ResponseInterface;
@@ -64,15 +66,25 @@ class Update
         return $this->chat;
     }
 
-    /**
-     * @return Message The message object.
-     */
     public function getMessage(): Message
     {
         if (empty($this->message)) {
             $path = $this->getType()->getMessagePath();
             $messageData = Hash::get($this->getOriginalData(), $path);
-            $this->message = new Message($messageData);
+
+            if (empty($messageData)) {
+                throw new \RuntimeException(__('Cannot find message data at path: {0}', $path));
+            }
+
+            if ($this->isCommand($messageData)) {
+                $this->message = new Command($messageData);
+            } elseif (isset($messageData['photo'])) {
+                $this->message = new Photo($messageData);
+            } elseif (isset($messageData['document'])) {
+                $this->message = new Document($messageData);
+            } else {
+                $this->message = new Message($messageData);
+            }
         }
 
         return $this->message;
@@ -103,7 +115,7 @@ class Update
 
         if (empty($this->callbackQuery)) {
             $callbackData = Hash::get($this->getOriginalData(), 'callback_query');
-            
+
             if (empty($callbackData)) {
                 throw new InvalidArgumentException('Callback query data is required for CALLBACK_QUERY updates.');
             }
@@ -138,14 +150,22 @@ class Update
     }
 
     /**
-     * Get the command name if the update is a command.
-     * 
-     * @return string|null
+     * @param array $messageData
+     * @return boolean
      */
-    public function getCommandName(): ?string
+    public function isCommand(Message|array $messageData): bool
     {
-        $commandMessage = new MessageCommand($this->getMessage());
+        if ($messageData instanceof Message) {
+            $messageData = $messageData->getOriginalData();
+        }
 
-        return $commandMessage->getCommandName() ?? null;
+        $entities = $messageData['entities'] ?? [];
+        foreach ($entities as $entity) {
+            if ($entity['type'] === 'bot_command' && $entity['offset'] === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
