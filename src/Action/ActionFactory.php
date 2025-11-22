@@ -7,6 +7,7 @@ namespace TeBo\Action;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use TeBo\Dto\Message\Command;
 use TeBo\Enum\UpdateType;
 use TeBo\Dto\Update;
 use TeBo\Exception\ActionNotFoundException;
@@ -38,8 +39,9 @@ class ActionFactory
         }
 
         if (is_array($action) && $updateType === UpdateType::COMMAND) {
+            $message = new Command($update->get('message'));
             $commandMap = $action;
-            $action = $commandMap[$update->getCommandName()]
+            $action = $commandMap[$message->getCommandName()]
                 ?? $commandMap[self::DEFAULT_KEY]
                 ?? $actionsMap[self::DEFAULT_KEY]
                 ?? null;

@@ -35,7 +35,7 @@ class Command extends Message
         if ($commandEntity) {
             $fullCommand = substr($text, 0, $commandEntity['length']);
             $parts = explode('@', $fullCommand); 
-            $this->command = $parts[0];
+            $this->command = trim($parts[0], '/');
 
             $argString = trim(substr($text, $commandEntity['length']));
             if (!empty($argString)) {

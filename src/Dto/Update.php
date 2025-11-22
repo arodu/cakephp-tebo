@@ -17,6 +17,7 @@ use TeBo\Enum\UpdateType;
 use TeBo\Response\ResponseInterface;
 use TeBo\Service\ApiService;
 use TeBo\Telegram\Chat;
+use TeBo\Utility\MessageFactory;
 use TeBo\Utility\Trait\DataManageTrait;
 
 class Update
@@ -35,8 +36,9 @@ class Update
 
     /**
      * @param array $updateData
+     * @param ApiService $apiService
      */
-    public function __construct(array $updateData = [], ApiService $apiService)
+    public function __construct(array $updateData, ApiService $apiService)
     {
         $this->setOriginalData($updateData);
         $this->apiService = $apiService;
@@ -66,6 +68,9 @@ class Update
         return $this->chat;
     }
 
+    /**
+     * @return Message
+     */
     public function getMessage(): Message
     {
         if (empty($this->message)) {
@@ -76,15 +81,7 @@ class Update
                 throw new \RuntimeException(__('Cannot find message data at path: {0}', $path));
             }
 
-            if ($this->isCommand($messageData)) {
-                $this->message = new Command($messageData);
-            } elseif (isset($messageData['photo'])) {
-                $this->message = new Photo($messageData);
-            } elseif (isset($messageData['document'])) {
-                $this->message = new Document($messageData);
-            } else {
-                $this->message = new Message($messageData);
-            }
+            $this->message = MessageFactory::create($messageData);
         }
 
         return $this->message;

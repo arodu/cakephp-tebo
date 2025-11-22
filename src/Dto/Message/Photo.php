@@ -42,4 +42,12 @@ class Photo extends Message
         $bestPhoto = $this->getBestPhoto();
         return $bestPhoto['file_id'] ?? null;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getCaption(): ?string
+    {
+        return $this->get('caption') ?? null;
+    }
 }
