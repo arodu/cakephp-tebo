@@ -93,7 +93,7 @@ class Chat
      * @param ResponseInterface $response
      * @return boolean
      */
-    public function send(ResponseInterface $response): bool
+    public function send(ResponseInterface $response, array $options = []): bool
     {
         $method = $response->telegramMethod();
         if (empty($method)) {
@@ -113,7 +113,21 @@ class Chat
         ]);
         EventManager::instance()->dispatch($event);
 
-        return $this->lastResult['ok'] ?? false;
+        $result = (bool)($this->lastResult['ok'] ?? false);
+
+        if (($result === false) && ($options['allow_sending_without_reply'] ?? true)) {
+            return $this->sendWithoutReply($response);
+        }
+
+        return $result;
+    }
+
+    protected function sendWithoutReply(ResponseInterface $response): bool
+    {
+        /** @var \TeBo\Response\Response $response */
+        $response = $response->disableReplyToMessageId();
+
+        return $this->send($response, ['allow_sending_without_reply' => false]);
     }
 
     /**

@@ -203,6 +203,13 @@ class Response implements ResponseInterface
         return $this;
     }
 
+    public function disableReplyToMessageId(): self
+    {
+        unset($this->data['reply_to_message_id']);
+
+        return $this;
+    }
+
     /**
      * @param boolean $force
      * @param boolean $selective
