@@ -57,7 +57,9 @@ class TeBoPlugin extends BasePlugin
             Bot::debug($e->getMessage());
         }
 
-        define('TEBO_CORE_PATH', ROOT . DS . 'vendor' . DS . 'arodu' . DS . 'tebo');
+        if (!defined('TEBO_CORE_PATH')) {
+            define('TEBO_CORE_PATH', ROOT . DS . 'vendor' . DS . 'arodu' . DS . 'tebo');
+        }
 
         $this->setEventsDebug();
     }
